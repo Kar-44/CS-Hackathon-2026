@@ -1,0 +1,1113 @@
+:root {
+    /* New Color Scheme */
+    --primary: #e60058;
+    --primary-dark: #b30045;
+    --primary-light: #ffebf2;
+    --text-dark: #333;
+    --text-light: #666;
+    --bg-color: #f4f7f6;
+    --white: #ffffff;
+    --border-radius: 12px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+}
+
+/* --- Navigation Bar --- */
+header {
+    background-color: var(--white);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 0 5%;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    text-decoration: none;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+}
+
+.nav-item {
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 500;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.nav-item:hover {
+    color: var(--primary);
+}
+
+.btn-add-offer {
+    background-color: var(--primary);
+    color: white !important;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.btn-add-offer:hover {
+    background-color: var(--primary-dark);
+}
+
+/* --- Hero / Search Section --- */
+.hero {
+    background: linear-gradient(135deg, var(--primary) 0%, #ff3380 100%);
+    padding: 60px 20px;
+    text-align: center;
+    color: white;
+}
+
+.search-container {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.search-input {
+    width: 100%;
+    padding: 15px 25px;
+    padding-right: 50px;
+    border-radius: 30px;
+    border: none;
+    font-size: 1rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    outline: none;
+}
+
+.search-btn {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--primary);
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+/* --- Layout --- */
+.container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    display: flex;
+    gap: 30px;
+}
+
+/* Sidebar */
+aside {
+    flex: 1;
+    min-width: 200px;
+    display: none;
+}
+
+@media(min-width: 768px) {
+    aside { display: block; }
+}
+
+.category-list h3 {
+    margin-bottom: 15px;
+    color: var(--primary);
+}
+
+.category-list ul {
+    list-style: none;
+}
+
+.category-list li {
+    margin-bottom: 10px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.category-list li:hover {
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
+}
+
+/* Offers Feed */
+.offers-feed {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* --- Offer Card --- */
+.offer-card {
+    display: flex;
+    background: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    height: 200px; 
+    position: relative;
+}
+
+.offer-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.card-image {
+    width: 200px;
+    min-width: 200px;
+    height: 100%;
+    background-color: #eee;
+}
+
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-details {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.offer-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.offer-price {
+    font-size: 1.3rem;
+    color: var(--primary);
+    font-weight: 800;
+}
+
+.offer-desc {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    margin-top: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; 
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.seller-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+}
+
+.seller-avatar {
+    width: 30px;
+    height: 30px;
+    background-color: var(--primary-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 0.8rem;
+}
+
+.contact-btn {
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    background: transparent;
+    padding: 6px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.contact-btn:hover {
+    background-color: var(--primary);
+    color: white;
+}
+
+.heart-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 35px;
+    height: 35px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: all 0.2s ease;
+    z-index: 10;
+    font-size: 1rem;
+    color: #ccc;
+}
+
+.heart-btn:hover {
+    transform: scale(1.1);
+    color: var(--primary);
+}
+
+.heart-btn.liked {
+    color: var(--primary);
+}
+
+/* --- ADD OFFER PAGE STYLES --- */
+.form-container {
+    background: white;
+    padding: 40px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+}
+
+/* Custom Price Input styling */
+.price-wrapper {
+    position: relative;
+}
+
+.price-symbol {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    font-weight: bold;
+}
+
+.price-wrapper input {
+    padding-left: 30px; /* Space for the € symbol */
+}
+
+/* Image Upload Styling */
+.image-upload-box {
+    border: 2px dashed #ccc;
+    padding: 30px;
+    text-align: center;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    background: #fafafa;
+}
+
+.image-upload-box:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+
+.submit-btn {
+    width: 100%;
+    background-color: var(--primary);
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+/* --- POPUP MODAL --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none; /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modal-box {
+    background: white;
+    padding: 30px;
+    border-radius: var(--border-radius);
+    text-align: center;
+    max-width: 400px;
+    animation: popIn 0.3s ease;
+}
+
+.modal-icon {
+    font-size: 3rem;
+    color: #2ecc71; /* Green for success */
+    margin-bottom: 15px;
+}
+
+@keyframes popIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* Favorites Header */
+.favorites-header {
+    padding: 40px 20px 0 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.favorites-header h2 {
+    color: var(--text-dark);
+    font-size: 2rem;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 15px;
+}
+
+@media (max-width: 600px) {
+    .offer-card {
+        flex-direction: column;
+        height: auto;
+    }
+    .card-image {
+        width: 100%;
+        height: 200px;
+    }
+}
+
+/* --- ACCOUNT & AUTH PAGE STYLES --- */
+
+/* Central Auth Box */
+.auth-wrapper {
+    max-width: 450px;
+    margin: 50px auto;
+    background: white;
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Toggle Buttons (Login vs Register) */
+.auth-toggle {
+    display: flex;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #eee;
+}
+
+.toggle-btn {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    background: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.toggle-btn.active {
+    color: var(--primary);
+}
+
+.toggle-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--primary);
+}
+
+/* Profile Section Styles */
+.profile-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile-pic-container {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 15px auto;
+    position: relative;
+    cursor: pointer;
+}
+
+.profile-pic {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--primary-light);
+    transition: border-color 0.3s;
+}
+
+.profile-pic-container:hover .profile-pic {
+    border-color: var(--primary);
+}
+
+.profile-pic-overlay {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: var(--primary);
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    border: 2px solid white;
+}
+
+.logout-btn {
+    background-color: #ff4757; /* Red for logout */
+    color: white;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.logout-btn:hover {
+    background-color: #e33b49;
+}
+
+/* Utility to hide sections */
+.hidden {
+    display: none !important;
+}
+
+/* Form error message */
+.error-msg {
+    color: #ff4757;
+    font-size: 0.9rem;
+    margin-top: -10px;
+    margin-bottom: 15px;
+    display: none;
+}
+
+:root {
+    --primary: #e60058;
+    --primary-dark: #b30045;
+    --primary-light: #ffebf2;
+    --text-dark: #333;
+    --text-light: #666;
+    --bg-color: #f4f7f6;
+    --white: #ffffff;
+    --border-radius: 12px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+}
+
+/* --- Navigation Bar --- */
+header {
+    background-color: var(--white);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 0 5%;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    text-decoration: none;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+}
+
+.nav-item {
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 500;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.nav-item:hover {
+    color: var(--primary);
+}
+
+.btn-add-offer {
+    background-color: var(--primary);
+    color: white !important;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.btn-add-offer:hover {
+    background-color: var(--primary-dark);
+}
+
+/* --- Layout Wrappers --- */
+.container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* Account Page Layout (Sidebar + Content) */
+.account-layout {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.account-sidebar {
+    flex: 1;
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.account-content {
+    flex: 3;
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Sidebar Buttons */
+.sidebar-btn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    text-align: left;
+    background: none;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    cursor: pointer;
+    margin-bottom: 5px;
+    transition: all 0.2s;
+}
+
+.sidebar-btn i {
+    margin-right: 10px;
+    width: 20px;
+}
+
+.sidebar-btn:hover {
+    background-color: var(--bg-color);
+}
+
+.sidebar-btn.active {
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
+
+/* Auth Pages (Login/Register Center Box) */
+.auth-wrapper {
+    max-width: 450px;
+    margin: 50px auto;
+    background: white;
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Password Toggle Eye */
+.password-wrapper {
+    position: relative;
+}
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    cursor: pointer;
+}
+
+/* Profile Picture */
+.profile-pic-container {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 15px auto;
+    position: relative;
+    cursor: pointer;
+}
+
+.profile-pic {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--primary-light);
+}
+
+.profile-pic-overlay {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: var(--primary);
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+}
+
+/* Forms */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+}
+
+.submit-btn {
+    width: 100%;
+    background-color: var(--primary);
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+/* My Posts List Styles */
+.my-post-item {
+    display: flex;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    align-items: center;
+    gap: 20px;
+}
+
+.my-post-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+.my-post-info {
+    flex: 1;
+}
+
+.my-post-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.btn-edit { background-color: #f0f0f0; color: #333; }
+.btn-delete { background-color: #ffe6e6; color: #ff4757; }
+.btn-edit:hover { background-color: #e0e0e0; }
+.btn-delete:hover { background-color: #ff2e43; color: white; }
+
+/* Utilities */
+.hidden { display: none !important; }
+.error-msg { color: #ff4757; margin-bottom: 15px; font-size: 0.9rem; display: none; }
+.divider { height: 1px; background: #eee; margin: 30px 0; }
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+.modal-box {
+    background: white; padding: 30px; border-radius: 12px;
+    max-width: 400px; width: 90%; text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .account-layout { flex-direction: column; }
+    .account-sidebar, .account-content { width: 100%; }
+}
+
+
+/* --- MESSAGING SYSTEM STYLES --- */
+
+/* Tabs for Buying / Selling */
+.chat-tabs {
+    display: flex;
+    margin-bottom: 20px;
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.chat-tab-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    background: none;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-light);
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.chat-tab-btn.active {
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
+
+/* Chat List Item Box */
+.chat-item {
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 15px;
+    border-radius: var(--border-radius);
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid transparent;
+}
+
+.chat-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-color: var(--primary-light);
+}
+
+/* Unread vs Read Styling */
+.chat-item.unread {
+    border-left: 4px solid var(--primary);
+}
+.chat-item.unread .last-msg {
+    font-weight: 800;
+    color: var(--text-dark);
+}
+
+.chat-item.read {
+    opacity: 0.85; /* Dimmed */
+}
+
+/* Layout within the Chat Box */
+.chat-thumb {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+.chat-info {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-title-text {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+}
+
+.last-msg {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+}
+
+/* --- CHAT OVERLAY (POPUP) --- */
+.chat-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none; /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+}
+
+.chat-window {
+    background: #f4f7f6;
+    width: 90%;
+    max-width: 500px;
+    height: 80vh;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Chat Header */
+.chat-window-header {
+    background: white;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.header-offer-img {
+    width: 45px; height: 45px; border-radius: 6px; object-fit: cover;
+    margin-right: 10px;
+}
+
+.header-user-pic {
+    width: 30px; height: 30px; border-radius: 50%; object-fit: cover;
+    margin-right: 8px;
+    border: 1px solid #ddd;
+}
+
+.header-info {
+    flex: 1;
+}
+
+.close-chat-btn {
+    background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer;
+}
+
+/* Messages Area */
+.messages-container {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Message Bubbles */
+.message {
+    max-width: 75%;
+    padding: 10px 15px;
+    border-radius: 18px;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    position: relative;
+}
+
+/* Other Person (Left) */
+.message.received {
+    align-self: flex-start;
+    background: white;
+    color: var(--text-dark);
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Me (Right) */
+.message.sent {
+    align-self: flex-end;
+    background: var(--primary);
+    color: white;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.msg-time {
+    font-size: 0.7rem;
+    margin-top: 5px;
+    display: block;
+    opacity: 0.7;
+    text-align: right;
+}
+
+/* Input Area */
+.chat-input-area {
+    background: white;
+    padding: 15px;
+    display: flex;
+    gap: 10px;
+    border-top: 1px solid #ddd;
+}
+
+.chat-input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    outline: none;
+}
+
+.send-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    width: 45px; height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

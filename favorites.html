@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Favorites - CampusCycle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="index.html" class="logo">
+                <i class="fas fa-bicycle"></i> CampusCycle
+            </a>
+            
+            <div class="nav-links">
+                <a href="favorites.html" class="nav-item" style="color: var(--primary);">
+                    <i class="fas fa-heart"></i>
+                </a>
+                <a href="#" class="nav-item"><i class="far fa-comment-dots"></i></a>
+                <a href="account.html" class="nav-item"><i class="far fa-user-circle"></i></a>
+                <a href="add-offer.html" class="nav-item btn-add-offer"><i class="fas fa-plus"></i> Add Offer</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="favorites-header">
+        <h2>Saved Offers</h2>
+    </div>
+
+    <div class="container">
+        
+        <aside>
+            <div class="category-list">
+                <h3>Your Lists</h3>
+                <ul>
+                    <li style="background-color: var(--primary-light); color: var(--primary-dark);">
+                        <i class="fas fa-heart"></i> All Favorites
+                    </li>
+                    <li><i class="fas fa-history"></i> Recently Viewed</li>
+                    <li><i class="fas fa-bell"></i> Price Alerts</li>
+                </ul>
+            </div>
+        </aside>
+
+        <div class="offers-feed" id="favFeed">
+            </div>
+    </div>
+
+    <script>
+        // --- HELPERS ---
+        function getCurrent() { return JSON.parse(localStorage.getItem('currentUser')); }
+        function saveCurrent(user) { localStorage.setItem('currentUser', JSON.stringify(user)); }
+        function getUsers() { return JSON.parse(localStorage.getItem('campusUsers')) || []; }
+        function saveUsers(users) { localStorage.setItem('campusUsers', JSON.stringify(users)); }
+
+        // --- LOAD FAVORITES ---
+        window.onload = function() {
+            const user = getCurrent();
+            const feed = document.getElementById('favFeed');
+            
+            // 1. Check Login
+            if (!user) {
+                feed.innerHTML = `
+                    <div style="text-align:center; padding: 40px;">
+                        <h3>Please Login</h3>
+                        <p style="color:#666; margin-bottom:20px;">You need to be logged in to see your favorites.</p>
+                        <a href="account.html" class="btn-add-offer" style="text-decoration:none;">Go to Login</a>
+                    </div>`;
+                return;
+            }
+
+            // 2. Check for Favorites
+            if (!user.favorites || user.favorites.length === 0) {
+                feed.innerHTML = '<p style="color:#666;">You haven\'t liked any offers yet.</p>';
+                return;
+            }
+
+            // 3. Get all offers and Filter
+            const allOffers = JSON.parse(localStorage.getItem('campusOffers')) || [];
+            const usersDB = getUsers();
+
+            // Filter offers that exist in user.favorites array
+            const myFavs = allOffers.filter(offer => user.favorites.includes(offer.id));
+
+            // 4. Render
+            myFavs.forEach(offer => {
+                
+                // Resolve Seller Info
+                let sellerName = offer.seller || "Unknown";
+                let avatarHtml = `<div class="seller-avatar">${sellerName.substring(0,2).toUpperCase()}</div>`;
+                
+                if (offer.sellerUsername) {
+                    const sellerObj = usersDB.find(u => u.username === offer.sellerUsername);
+                    if (sellerObj) {
+                        sellerName = sellerObj.profile.name || sellerObj.username;
+                        if (sellerObj.profile.avatar && sellerObj.profile.avatar.length > 50) {
+                            avatarHtml = `<img src="${sellerObj.profile.avatar}" style="width:30px; height:30px; border-radius:50%; object-fit:cover;">`;
+                        }
+                    }
+                }
+
+                const html = `
+                    <div class="offer-card" id="card-${offer.id}">
+                        <button class="heart-btn liked" onclick="removeFavorite(this, ${offer.id})">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                        <div class="card-image">
+                            <img src="${offer.image}" alt="${offer.title}">
+                        </div>
+                        <div class="card-details">
+                            <div class="card-header">
+                                <div class="offer-title">${offer.title}</div>
+                                <div class="offer-price">€${offer.price}</div>
+                            </div>
+                            <p class="offer-desc">${offer.desc}</p>
+                            <div class="card-footer">
+                                <div class="seller-info">
+                                    ${avatarHtml}
+                                    <span style="margin-left:8px;">${sellerName} • ${offer.time}</span>
+                                </div>
+                                <button class="contact-btn">Message</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                // Add to bottom so they appear in order
+                feed.insertAdjacentHTML('beforeend', html);
+            });
+        };
+
+        // --- REMOVE FAVORITE ---
+        function removeFavorite(btn, id) {
+            let user = getCurrent();
+            if (!user.favorites) return;
+
+            // Remove from array
+            const index = user.favorites.indexOf(id);
+            if (index > -1) {
+                user.favorites.splice(index, 1);
+            }
+
+            // Save Data
+            saveCurrent(user);
+            
+            let allUsers = getUsers();
+            const userIdx = allUsers.findIndex(u => u.username === user.username);
+            if (userIdx !== -1) {
+                allUsers[userIdx] = user;
+                saveUsers(allUsers);
+            }
+
+            // VISUAL: Remove the card from the screen immediately
+            const card = document.getElementById(`card-${id}`);
+            if(card) {
+                card.style.opacity = '0';
+                setTimeout(() => card.remove(), 300); // Wait for fade out
+                
+                // Check if list is empty now
+                if (user.favorites.length === 0) {
+                    document.getElementById('favFeed').innerHTML = '<p style="color:#666;">You haven\'t liked any offers yet.</p>';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

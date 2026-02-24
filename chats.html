@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages - CampusCycle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="index.html" class="logo">
+                <i class="fas fa-bicycle"></i> CampusCycle
+            </a>
+            <div class="nav-links">
+                <a href="favorites.html" class="nav-item"><i class="far fa-heart"></i></a>
+                <a href="chats.html" class="nav-item" style="color: var(--primary);"><i class="fas fa-comment-dots"></i></a>
+                <a href="account.html" class="nav-item"><i class="far fa-user-circle"></i></a>
+                <a href="add-offer.html" class="nav-item btn-add-offer"><i class="fas fa-plus"></i> Add Offer</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container" style="display: block; max-width: 800px;">
+        
+        <div class="chat-tabs">
+            <button class="chat-tab-btn active" id="btnBuying" onclick="switchTab('buying')">I'm Buying</button>
+            <button class="chat-tab-btn" id="btnSelling" onclick="switchTab('selling')">I'm Selling</button>
+        </div>
+
+        <div id="chatList">
+            </div>
+
+    </div>
+
+    <div class="chat-overlay" id="chatOverlay">
+        <div class="chat-window">
+            
+            <div class="chat-window-header">
+                <img src="" id="chatOfferImg" class="header-offer-img">
+                <div class="header-info">
+                    <h4 id="chatOfferTitle" style="margin-bottom: 2px;">Title</h4>
+                    <div style="display: flex; align-items: center; font-size: 0.85rem; color: #666;">
+                        <img src="" id="chatOtherPic" class="header-user-pic">
+                        <span id="chatOtherName">User</span>
+                    </div>
+                </div>
+                <button class="close-chat-btn" onclick="closeChat()">&times;</button>
+            </div>
+
+            <div class="messages-container" id="msgContainer">
+                </div>
+
+            <form class="chat-input-area" id="chatForm">
+                <input type="text" class="chat-input" id="msgInput" placeholder="Type a message..." autocomplete="off">
+                <button type="submit" class="send-btn"><i class="fas fa-paper-plane"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // --- HELPERS ---
+        function getCurrent() { return JSON.parse(localStorage.getItem('currentUser')); }
+        function getChats() { return JSON.parse(localStorage.getItem('campusChats')) || []; }
+        function saveChats(chats) { localStorage.setItem('campusChats', JSON.stringify(chats)); }
+        
+        let activeTab = 'buying'; // buying | selling
+        let currentChatId = null;
+
+        // --- INIT ---
+        window.onload = function() {
+            if(!getCurrent()) {
+                window.location.href = 'account.html';
+                return;
+            }
+            renderList();
+        };
+
+        function switchTab(tab) {
+            activeTab = tab;
+            document.getElementById('btnBuying').className = tab === 'buying' ? 'chat-tab-btn active' : 'chat-tab-btn';
+            document.getElementById('btnSelling').className = tab === 'selling' ? 'chat-tab-btn active' : 'chat-tab-btn';
+            renderList();
+        }
+
+        // --- RENDER LIST ---
+        function renderList() {
+            const user = getCurrent();
+            const chats = getChats();
+            const container = document.getElementById('chatList');
+            container.innerHTML = '';
+
+            // Filter chats based on tab
+            const myChats = chats.filter(c => {
+                if(activeTab === 'buying') return c.buyer === user.username;
+                else return c.sellerUsername === user.username;
+            });
+
+            if(myChats.length === 0) {
+                container.innerHTML = `<p style="text-align:center; padding:20px; color:#999;">No messages in "${activeTab}" yet.</p>`;
+                return;
+            }
+
+            // Sort by latest message time
+            myChats.sort((a,b) => b.lastUpdated - a.lastUpdated);
+
+            myChats.forEach(chat => {
+                const isUnread = !chat.readBy[user.username];
+                
+                // Determine display info
+                const otherUser = activeTab === 'buying' ? chat.sellerName : chat.buyer; // Name to show
+                
+                // Create HTML
+                const div = document.createElement('div');
+                div.className = `chat-item ${isUnread ? 'unread' : 'read'}`;
+                div.onclick = () => openChat(chat.id);
+                
+                div.innerHTML = `
+                    <img src="${chat.offerImage}" class="chat-thumb">
+                    <div class="chat-info">
+                        <div class="chat-details">
+                            <span class="chat-title-text">${chat.offerTitle}</span>
+                            <span class="last-msg">${chat.lastMessage}</span>
+                        </div>
+                        <div style="text-align:right;">
+                            <span style="font-size:0.8rem; color:#999;">${new Date(chat.lastUpdated).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // --- OPEN CHAT (POPUP) ---
+        function openChat(chatId) {
+            currentChatId = chatId;
+            const user = getCurrent();
+            const chats = getChats();
+            const chat = chats.find(c => c.id === chatId);
+
+            if(!chat) return;
+
+            // 1. Setup Header
+            document.getElementById('chatOfferImg').src = chat.offerImage;
+            document.getElementById('chatOfferTitle').innerText = chat.offerTitle;
+            
+            // Show the OTHER person in the header
+            if(user.username === chat.buyer) {
+                // I am buyer, show seller
+                document.getElementById('chatOtherName').innerText = chat.sellerName;
+                document.getElementById('chatOtherPic').src = chat.sellerAvatar || 'https://via.placeholder.com/30';
+            } else {
+                // I am seller, show buyer
+                document.getElementById('chatOtherName').innerText = chat.buyer;
+                document.getElementById('chatOtherPic').src = 'https://via.placeholder.com/30'; // Buyer avatar usually generic unless stored
+            }
+
+            // 2. Mark as Read
+            chat.readBy[user.username] = true;
+            saveChats(chats);
+            renderList(); // Update list UI (remove bold)
+
+            // 3. Render Messages
+            renderMessages(chat.messages, user.username);
+
+            // 4. Show Overlay
+            document.getElementById('chatOverlay').style.display = 'flex';
+        }
+
+        function renderMessages(messages, myUsername) {
+            const container = document.getElementById('msgContainer');
+            container.innerHTML = '';
+
+            messages.forEach(msg => {
+                const div = document.createElement('div');
+                const isMe = msg.sender === myUsername;
+                div.className = `message ${isMe ? 'sent' : 'received'}`;
+                div.innerHTML = `
+                    ${msg.text}
+                    <span class="msg-time">${new Date(msg.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                `;
+                container.appendChild(div);
+            });
+
+            // Scroll to bottom
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function closeChat() {
+            document.getElementById('chatOverlay').style.display = 'none';
+            currentChatId = null;
+        }
+
+        // --- SEND MESSAGE ---
+        document.getElementById('chatForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if(!currentChatId) return;
+
+            const input = document.getElementById('msgInput');
+            const text = input.value.trim();
+            if(!text) return;
+
+            const user = getCurrent();
+            let chats = getChats();
+            let chat = chats.find(c => c.id === currentChatId);
+
+            // Create Message Object
+            const newMsg = {
+                sender: user.username,
+                text: text,
+                time: Date.now()
+            };
+
+            // Update Chat Data
+            chat.messages.push(newMsg);
+            chat.lastMessage = text;
+            chat.lastUpdated = Date.now();
+            
+            // Handle Read Status (Mark unread for the OTHER person)
+            const otherPerson = (user.username === chat.buyer) ? chat.sellerUsername : chat.buyer;
+            chat.readBy[user.username] = true;
+            chat.readBy[otherPerson] = false;
+
+            saveChats(chats);
+            
+            // UI Update
+            input.value = '';
+            renderMessages(chat.messages, user.username);
+            renderList(); // Update sidebar preview
+        });
+
+    </script>
+</body>
+</html>

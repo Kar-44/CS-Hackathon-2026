@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Offer - CampusCycle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="index.html" class="logo">
+                <i class="fas fa-bicycle"></i> CampusCycle
+            </a>
+            <div class="nav-links">
+                <a href="favorites.html" class="nav-item"><i class="far fa-heart"></i></a>
+                <a href="#" class="nav-item"><i class="far fa-comment-dots"></i></a>
+                <a href="account.html" class="nav-item"><i class="far fa-user-circle"></i></a>
+                <a href="add-offer.html" class="nav-item btn-add-offer" style="background-color: var(--primary-dark);">
+                    <i class="fas fa-plus"></i> Add Offer
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container" style="display: block;">
+        <h2 style="text-align: center; margin-bottom: 30px; color: var(--primary);">Sell Item</h2>
+        
+        <p id="userWelcome" style="text-align: center; color: #666; margin-bottom: 20px; display: none;">
+            Posting as: <strong id="postingAsName">User</strong>
+        </p>
+        
+        <div class="form-container">
+            <form id="offerForm">
+                
+                <div class="form-group">
+                    <label>Category</label>
+                    <select class="form-control" id="category" required>
+                        <option value="" disabled selected>Select a category...</option>
+                        <option value="Textbooks">Textbooks</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Dorm Furniture">Dorm Furniture</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Clothing">Clothing</option>
+                        <option value="Events">Events</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Photos</label>
+                    <div class="image-upload-box" onclick="document.getElementById('imageInput').click()">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: #ccc;"></i>
+                        <p style="margin-top: 10px; color: #666;">Click to upload image</p>
+                        <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="previewImage(this)">
+                    </div>
+                    <div id="imagePreview" style="margin-top: 10px; display: none;">
+                        <img id="previewImg" src="" style="max-height: 150px; border-radius: 8px;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Offer Title</label>
+                    <input type="text" class="form-control" id="title" placeholder="e.g. Calculus Textbook, Blue Bike" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea class="form-control" id="description" rows="4" placeholder="Describe the condition, location, etc." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Price</label>
+                    <div class="price-wrapper">
+                        <span class="price-symbol">€</span>
+                        <input type="number" class="form-control" id="price" placeholder="0.00" step="0.01" min="0" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Publish Offer</button>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-box">
+            <i class="fas fa-check-circle modal-icon"></i>
+            <h3>Success!</h3>
+            <p style="margin: 10px 0 20px 0; color: #666;">Your offer has been published to CampusCycle.</p>
+            <button class="submit-btn" onclick="window.location.href='index.html'">Go to Homepage</button>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. AUTH CHECK ON LOAD ---
+        // We verify immediately if a user is logged in.
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+        if (!currentUser) {
+            // If not logged in, alert and redirect to login page
+            alert("You must be logged in to post an offer.");
+            window.location.href = 'account.html';
+        } else {
+            // Show the user who they are posting as
+            document.getElementById('userWelcome').style.display = 'block';
+            document.getElementById('postingAsName').textContent = currentUser.profile.name || currentUser.username;
+        }
+
+        // --- 2. IMAGE PREVIEW ---
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // --- 3. HANDLE FORM SUBMISSION ---
+        document.getElementById('offerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Double check auth just in case
+            if (!currentUser) return;
+
+            const category = document.getElementById('category').value;
+            const title = document.getElementById('title').value;
+            const desc = document.getElementById('description').value;
+            const price = parseFloat(document.getElementById('price').value).toFixed(2);
+            const imageInput = document.getElementById('imageInput');
+
+            // Default image placeholder
+            let imageUrl = 'https://via.placeholder.com/200?text=No+Image';
+
+            // Function to save data to LocalStorage
+            const saveAndRedirect = (finalImgUrl) => {
+                const newOffer = {
+                    id: Date.now(), // Unique ID
+                    title: title,
+                    price: price,
+                    category: category,
+                    desc: desc,
+                    image: finalImgUrl,
+                    // --- KEY FIX IS HERE ---
+                    // We save the username so "account.html" knows this offer belongs to you.
+                    sellerUsername: currentUser.username, 
+                    seller: currentUser.profile.name || currentUser.username, 
+                    time: "Just now"
+                };
+
+                // Get existing offers, add new one, save back
+                let offers = JSON.parse(localStorage.getItem('campusOffers')) || [];
+                offers.push(newOffer);
+                localStorage.setItem('campusOffers', JSON.stringify(offers));
+
+                // Show Success Modal
+                document.getElementById('successModal').style.display = 'flex';
+            };
+
+            // Handle Image Processing
+            if (imageInput.files && imageInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    saveAndRedirect(e.target.result); // Save Base64 image
+                }
+                reader.readAsDataURL(imageInput.files[0]);
+            } else {
+                saveAndRedirect(imageUrl);
+            }
+        });
+    </script>
+</body>
+</html>
