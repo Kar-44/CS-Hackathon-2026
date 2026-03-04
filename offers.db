@@ -1,0 +1,83 @@
+// offers.db - Offers Database Client (Server-backed)
+// Provides window.OffersDB interface - delegates to API server
+
+window.OffersDB = (function() {
+
+    // Synchronous cache getter for backward compat
+    function getOffers() {
+        const cached = sessionStorage.getItem('_cachedOffers');
+        return cached ? JSON.parse(cached) : [];
+    }
+
+    function saveOffers() {
+        // No-op: server is the source of truth
+    }
+
+    // Async function to refresh the offers cache from server
+    async function refreshOffers() {
+        try {
+            const offers = await API.getOffers();
+            sessionStorage.setItem('_cachedOffers', JSON.stringify(offers));
+            return offers;
+        } catch (e) {
+            console.error('Failed to refresh offers', e);
+            return [];
+        }
+    }
+
+    return {
+        getOffers: getOffers,
+        saveOffers: saveOffers,
+        refreshOffers: refreshOffers,
+
+        /**
+         * Add a new offer (async)
+         */
+        addOffer: async function(offer) {
+            try {
+                const result = await API.addOffer(offer);
+                await refreshOffers();
+                return result;
+            } catch (e) {
+                console.error('Failed to add offer', e);
+                return { success: false };
+            }
+        },
+
+        /**
+         * Delete an offer by ID (async)
+         */
+        deleteOffer: async function(id) {
+            try {
+                await API.deleteOffer(id);
+                await refreshOffers();
+                return true;
+            } catch (e) {
+                console.error('Failed to delete offer', e);
+                return false;
+            }
+        },
+
+        /**
+         * Update an existing offer (async)
+         */
+        updateOffer: async function(id, data) {
+            try {
+                await API.updateOffer(id, data);
+                await refreshOffers();
+                return true;
+            } catch (e) {
+                console.error('Failed to update offer', e);
+                return false;
+            }
+        },
+
+        /**
+         * Get an offer by its ID (sync, from cache)
+         */
+        getOfferById: function(id) {
+            let offers = getOffers();
+            return offers.find(o => String(o.id) === String(id)) || null;
+        }
+    };
+})();

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
     <header>
@@ -14,12 +16,12 @@
             <a href="index.html" class="logo">
                 <i class="fas fa-bicycle"></i> CampusCycle
             </a>
-            
+
             <div class="nav-links">
                 <a href="favorites.html" class="nav-item" style="color: var(--primary);">
                     <i class="fas fa-heart"></i>
                 </a>
-                <a href="#" class="nav-item"><i class="far fa-comment-dots"></i></a>
+                <a href="chats.html" class="nav-item"><i class="far fa-comment-dots"></i></a>
                 <a href="account.html" class="nav-item"><i class="far fa-user-circle"></i></a>
                 <a href="add-offer.html" class="nav-item btn-add-offer"><i class="fas fa-plus"></i> Add Offer</a>
             </div>
@@ -31,7 +33,7 @@
     </div>
 
     <div class="container">
-        
+
         <aside>
             <div class="category-list">
                 <h3>Your Lists</h3>
@@ -46,21 +48,22 @@
         </aside>
 
         <div class="offers-feed" id="favFeed">
-            </div>
+        </div>
     </div>
 
+    <script src="api.js"></script>
+    <script src="login.db"></script>
+    <script src="offers.db"></script>
     <script>
         // --- HELPERS ---
-        function getCurrent() { return JSON.parse(localStorage.getItem('currentUser')); }
-        function saveCurrent(user) { localStorage.setItem('currentUser', JSON.stringify(user)); }
-        function getUsers() { return JSON.parse(localStorage.getItem('campusUsers')) || []; }
-        function saveUsers(users) { localStorage.setItem('campusUsers', JSON.stringify(users)); }
+        function getCurrent() { return API.getCurrentUser(); }
+        function saveCurrent(user) { API.setCurrentUser(user); }
 
         // --- LOAD FAVORITES ---
-        window.onload = function() {
+        window.onload = async function () {
             const user = getCurrent();
             const feed = document.getElementById('favFeed');
-            
+
             // 1. Check Login
             if (!user) {
                 feed.innerHTML = `
@@ -72,26 +75,41 @@
                 return;
             }
 
+            // Load data from server
+            try {
+                await window.OffersDB.refreshOffers();
+                await window.LoginDB.refreshUsers();
+            } catch (e) { /* use cache if fails */ }
+
+            // Refresh favorites from server
+            let favIds;
+            try {
+                favIds = await API.getFavorites();
+                // Update cached user
+                user.favorites = favIds;
+                saveCurrent(user);
+            } catch (e) {
+                favIds = user.favorites || [];
+            }
+
             // 2. Check for Favorites
-            if (!user.favorites || user.favorites.length === 0) {
+            if (!favIds || favIds.length === 0) {
                 feed.innerHTML = '<p style="color:#666;">You haven\'t liked any offers yet.</p>';
                 return;
             }
 
             // 3. Get all offers and Filter
-            const allOffers = JSON.parse(localStorage.getItem('campusOffers')) || [];
-            const usersDB = getUsers();
+            const allOffers = window.OffersDB.getOffers();
+            const usersDB = window.LoginDB.getUsers();
 
-            // Filter offers that exist in user.favorites array
-            const myFavs = allOffers.filter(offer => user.favorites.includes(offer.id));
+            const myFavs = allOffers.filter(offer => favIds.includes(offer.id));
 
             // 4. Render
             myFavs.forEach(offer => {
-                
-                // Resolve Seller Info
+
                 let sellerName = offer.seller || "Unknown";
-                let avatarHtml = `<div class="seller-avatar">${sellerName.substring(0,2).toUpperCase()}</div>`;
-                
+                let avatarHtml = `<div class="seller-avatar">${sellerName.substring(0, 2).toUpperCase()}</div>`;
+
                 if (offer.sellerUsername) {
                     const sellerObj = usersDB.find(u => u.username === offer.sellerUsername);
                     if (sellerObj) {
@@ -121,49 +139,86 @@
                                     ${avatarHtml}
                                     <span style="margin-left:8px;">${sellerName} • ${offer.time}</span>
                                 </div>
-                                <button class="contact-btn">Message</button>
+                                <button class="contact-btn" onclick="startChat('${offer.id}')">Message</button>
                             </div>
                         </div>
                     </div>
                 `;
-                // Add to bottom so they appear in order
                 feed.insertAdjacentHTML('beforeend', html);
             });
         };
 
         // --- REMOVE FAVORITE ---
-        function removeFavorite(btn, id) {
+        async function removeFavorite(btn, id) {
             let user = getCurrent();
-            if (!user.favorites) return;
+            if (!user) return;
 
-            // Remove from array
-            const index = user.favorites.indexOf(id);
-            if (index > -1) {
-                user.favorites.splice(index, 1);
-            }
-
-            // Save Data
-            saveCurrent(user);
-            
-            let allUsers = getUsers();
-            const userIdx = allUsers.findIndex(u => u.username === user.username);
-            if (userIdx !== -1) {
-                allUsers[userIdx] = user;
-                saveUsers(allUsers);
+            try {
+                await API.removeFavorite(id);
+            } catch (e) {
+                alert('Failed to remove favorite.');
+                return;
             }
 
             // VISUAL: Remove the card from the screen immediately
             const card = document.getElementById(`card-${id}`);
-            if(card) {
+            if (card) {
                 card.style.opacity = '0';
-                setTimeout(() => card.remove(), 300); // Wait for fade out
-                
-                // Check if list is empty now
-                if (user.favorites.length === 0) {
+                setTimeout(() => card.remove(), 300);
+
+                // Refresh user cache
+                user = getCurrent(); // re-read after API updated it
+                if (!user.favorites || user.favorites.length === 0) {
                     document.getElementById('favFeed').innerHTML = '<p style="color:#666;">You haven\'t liked any offers yet.</p>';
                 }
             }
         }
+
+        // --- START CHAT FROM FAVORITES ---
+        async function startChat(offerId) {
+            const user = getCurrent();
+            if (!user) {
+                alert("Please login to send messages.");
+                window.location.href = 'account.html';
+                return;
+            }
+
+            const offers = window.OffersDB.getOffers();
+            const offer = offers.find(o => o.id == offerId);
+            if (!offer) return;
+
+            if (offer.sellerUsername === user.username) {
+                alert("You cannot message yourself.");
+                return;
+            }
+
+            try {
+                let sellerAvatar = '';
+                const users = window.LoginDB.getUsers();
+                if (offer.sellerUsername) {
+                    const sellerObj = users.find(u => u.username === offer.sellerUsername);
+                    if (sellerObj && sellerObj.profile && sellerObj.profile.avatar) {
+                        sellerAvatar = sellerObj.profile.avatar;
+                    }
+                }
+
+                const result = await API.createChat({
+                    offerId: String(offerId),
+                    sellerUsername: offer.sellerUsername || 'Unknown',
+                    sellerName: offer.seller || 'Unknown',
+                    sellerAvatar: sellerAvatar,
+                    offerTitle: offer.title,
+                    offerImage: offer.image
+                });
+
+                if (result.success) {
+                    window.location.href = `chats.html?chatId=${result.chatId}`;
+                }
+            } catch (e) {
+                alert('Failed to start chat. Please try again.');
+            }
+        }
     </script>
 </body>
+
 </html>

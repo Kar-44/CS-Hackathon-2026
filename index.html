@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
     <header>
@@ -14,7 +16,7 @@
             <a href="index.html" class="logo">
                 <i class="fas fa-bicycle"></i> CampusCycle
             </a>
-            
+
             <div class="nav-links">
                 <a href="favorites.html" class="nav-item" title="Favorites"><i class="far fa-heart"></i></a>
                 <a href="chats.html" class="nav-item" title="Chats"><i class="far fa-comment-dots"></i></a>
@@ -28,136 +30,123 @@
         <h1>Find what you need on campus.</h1>
         <br>
         <div class="search-container">
-            <input type="text" class="search-input" placeholder="Search for textbooks, furniture, electronics...">
-            <button class="search-btn"><i class="fas fa-search"></i></button>
+            <input type="text" class="search-input" id="searchInput"
+                placeholder="Search for textbooks, furniture, electronics...">
+            <button class="search-btn" onclick="applySearch()"><i class="fas fa-search"></i></button>
         </div>
     </section>
 
     <div class="container">
-        
+
         <aside>
             <div class="category-list">
                 <h3>Categories</h3>
                 <ul>
-                    <li><i class="fas fa-book"></i> Textbooks</li>
-                    <li><i class="fas fa-laptop"></i> Electronics</li>
-                    <li><i class="fas fa-couch"></i> Dorm Furniture</li>
-                    <li><i class="fas fa-bicycle"></i> Transport</li>
-                    <li><i class="fas fa-tshirt"></i> Clothing</li>
-                    <li><i class="fas fa-ticket-alt"></i> Events</li>
+                    <li onclick="setCategory(this, '')" class="active-category"><i class="fas fa-th-list"></i> All
+                        Categories</li>
+                    <li onclick="setCategory(this, 'Textbooks')"><i class="fas fa-book"></i> Textbooks</li>
+                    <li onclick="setCategory(this, 'Electronics')"><i class="fas fa-laptop"></i> Electronics</li>
+                    <li onclick="setCategory(this, 'Dorm Furniture')"><i class="fas fa-couch"></i> Dorm Furniture</li>
+                    <li onclick="setCategory(this, 'Transport')"><i class="fas fa-bicycle"></i> Transport</li>
+                    <li onclick="setCategory(this, 'Clothing')"><i class="fas fa-tshirt"></i> Clothing</li>
+                    <li onclick="setCategory(this, 'Events')"><i class="fas fa-ticket-alt"></i> Events</li>
                 </ul>
             </div>
         </aside>
 
         <div class="offers-feed" id="offersFeed">
-            
-            <div class="offer-card">
-                <button class="heart-btn" onclick="this.classList.toggle('liked')"><i class="fas fa-heart"></i></button>
-                <div class="card-image">
-                    <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=200&h=200" alt="Calculus Textbook">
-                </div>
-                <div class="card-details">
-                    <div class="card-header">
-                        <div class="offer-title">Calculus Early Transcendentals (8th Ed)</div>
-                        <div class="offer-price">€45.00</div>
-                    </div>
-                    <p class="offer-desc">Barely used, no highlighting inside. Need it gone ASAP before the semester starts.</p>
-                    <div class="card-footer">
-                        <div class="seller-info">
-                            <div class="seller-avatar">JS</div>
-                            <span>John Smith • 2h ago</span>
-                        </div>
-                        <button class="contact-btn">Message</button>
-                    </div>
-                </div>
-            </div>
 
-            <div class="offer-card">
-                <button class="heart-btn" onclick="this.classList.toggle('liked')"><i class="fas fa-heart"></i></button>
-                <div class="card-image">
-                    <img src="https://images.unsplash.com/photo-1532323544230-7191fd51bc1b?auto=format&fit=crop&q=80&w=200&h=200" alt="Bike">
-                </div>
-                <div class="card-details">
-                    <div class="card-header">
-                        <div class="offer-title">Vintage Road Bike</div>
-                        <div class="offer-price">€120.00</div>
-                    </div>
-                    <p class="offer-desc">Great for getting around campus. New tires and brakes recently installed.</p>
-                    <div class="card-footer">
-                        <div class="seller-info">
-                            <div class="seller-avatar">AL</div>
-                            <span>Anna Lee • 5h ago</span>
-                        </div>
-                        <button class="contact-btn">Message</button>
-                    </div>
-                </div>
-            </div>
 
         </div>
     </div>
 
-    <script>
-        // Load offers from Local Storage on page load
-        window.onload = function() {
-            const storedOffers = JSON.parse(localStorage.getItem('campusOffers')) || [];
-            const feed = document.getElementById('offersFeed');
-
-            // Iterate through stored offers and create HTML
-            storedOffers.forEach(offer => {
-                const html = `
-                    <div class="offer-card">
-                        <button class="heart-btn" onclick="this.classList.toggle('liked')"><i class="fas fa-heart"></i></button>
-                        <div class="card-image">
-                            <img src="${offer.image}" alt="${offer.title}">
-                        </div>
-                        <div class="card-details">
-                            <div class="card-header">
-                                <div class="offer-title">${offer.title}</div>
-                                <div class="offer-price">€${offer.price}</div>
-                            </div>
-                            <p class="offer-desc">${offer.desc}</p>
-                            <div class="card-footer">
-                                <div class="seller-info">
-                                    <div class="seller-avatar">ME</div>
-                                    <span>${offer.seller} • ${offer.time}</span>
-                                </div>
-                                <button class="contact-btn">Message</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                // Insert new offers at the TOP of the list
-                feed.insertAdjacentHTML('afterbegin', html);
-            });
-        }
-    </script>
-
+    <script src="api.js"></script>
+    <script src="login.db"></script>
+    <script src="offers.db"></script>
     <script>
         // --- GLOBAL HELPERS ---
-        function getCurrent() { return JSON.parse(localStorage.getItem('currentUser')); }
-        function saveCurrent(user) { localStorage.setItem('currentUser', JSON.stringify(user)); }
-        function getUsers() { return JSON.parse(localStorage.getItem('campusUsers')) || []; }
-        function saveUsers(users) { localStorage.setItem('campusUsers', JSON.stringify(users)); }
+        function getCurrent() { return API.getCurrentUser(); }
+        function saveCurrent(user) { API.setCurrentUser(user); }
 
-        // --- LOAD OFFERS ON PAGE LOAD ---
-        window.onload = function() {
-            const storedOffers = JSON.parse(localStorage.getItem('campusOffers')) || [];
-            const users = getUsers();
-            const currentUser = getCurrent();
-            const feed = document.getElementById('offersFeed');
-
-            // If no offers exist, show a message
-            if (storedOffers.length === 0) {
-                feed.innerHTML = '<p style="text-align:center; color:#666; margin-top:20px;">No offers yet. Be the first to add one!</p>';
+        async function startChat(offerId) {
+            const user = getCurrent();
+            if (!user) {
+                alert("Please login to send messages.");
+                window.location.href = 'account.html';
                 return;
             }
 
-            // Iterate through offers
-            storedOffers.forEach(offer => {
-                
-                // 1. Get Seller Info (Avatar/Name)
+            const offers = window.OffersDB.getOffers();
+            const offer = offers.find(o => o.id == offerId);
+            if (!offer) return;
+
+            if (offer.sellerUsername === user.username) {
+                alert("You cannot message yourself.");
+                return;
+            }
+
+            try {
+                // Get seller avatar from cached users
+                let sellerAvatar = '';
+                const users = window.LoginDB.getUsers();
+                if (offer.sellerUsername) {
+                    const sellerObj = users.find(u => u.username === offer.sellerUsername);
+                    if (sellerObj && sellerObj.profile && sellerObj.profile.avatar) {
+                        sellerAvatar = sellerObj.profile.avatar;
+                    }
+                }
+
+                const result = await API.createChat({
+                    offerId: String(offerId),
+                    sellerUsername: offer.sellerUsername || 'Unknown',
+                    sellerName: offer.seller || 'Unknown',
+                    sellerAvatar: sellerAvatar,
+                    offerTitle: offer.title,
+                    offerImage: offer.image
+                });
+
+                if (result.success) {
+                    window.location.href = `chats.html?chatId=${result.chatId}`;
+                }
+            } catch (e) {
+                alert('Failed to start chat. Please try again.');
+            }
+        }
+
+        let currentCategory = '';
+        let currentSearch = '';
+
+        // --- FILTER AND RENDER OFFERS ---
+        function renderOffers() {
+            const storedOffers = window.OffersDB.getOffers();
+            const users = window.LoginDB.getUsers();
+            const currentUser = getCurrent();
+            const feed = document.getElementById('offersFeed');
+            feed.innerHTML = '';
+
+            let filteredOffers = storedOffers;
+
+            if (currentCategory) {
+                filteredOffers = filteredOffers.filter(o => o.category === currentCategory);
+            }
+
+            if (currentSearch) {
+                const term = currentSearch.toLowerCase();
+                filteredOffers = filteredOffers.filter(o =>
+                    (o.title && o.title.toLowerCase().includes(term)) ||
+                    (o.desc && o.desc.toLowerCase().includes(term))
+                );
+            }
+
+            if (filteredOffers.length === 0) {
+                feed.innerHTML = '<p style="text-align:center; color:#666; margin-top:20px; width: 100%;">No offers found matching your criteria.</p>';
+                return;
+            }
+
+            filteredOffers.forEach(offer => {
+
                 let sellerName = offer.seller || "Unknown";
-                let avatarHtml = `<div class="seller-avatar">${sellerName.substring(0,2).toUpperCase()}</div>`;
+                let avatarHtml = `<div class="seller-avatar">${sellerName.substring(0, 2).toUpperCase()}</div>`;
 
                 if (offer.sellerUsername) {
                     const sellerObj = users.find(u => u.username === offer.sellerUsername);
@@ -169,14 +158,12 @@
                     }
                 }
 
-                // 2. Check if currently Liked by THIS user
                 let isLiked = false;
                 if (currentUser && currentUser.favorites && currentUser.favorites.includes(offer.id)) {
                     isLiked = true;
                 }
                 const likeClass = isLiked ? 'liked' : '';
 
-                // 3. Render Card
                 const html = `
                     <div class="offer-card" id="card-${offer.id}">
                         <button class="heart-btn ${likeClass}" onclick="toggleLike(this, ${offer.id})">
@@ -196,51 +183,73 @@
                                     ${avatarHtml}
                                     <span style="margin-left:8px;">${sellerName} • ${offer.time}</span>
                                 </div>
-                                <button class="contact-btn">Message</button>
+                                <button class="contact-btn" onclick="startChat('${offer.id}')">Message</button>
                             </div>
                         </div>
                     </div>
                 `;
-                feed.insertAdjacentHTML('afterbegin', html);
+                feed.insertAdjacentHTML('beforeend', html);
             });
         }
 
+        // --- FILTER HELPERS ---
+        function setCategory(element, category) {
+            document.querySelectorAll('.category-list li').forEach(li => li.classList.remove('active-category'));
+            element.classList.add('active-category');
+
+            currentCategory = category;
+            renderOffers();
+        }
+
+        function applySearch() {
+            currentSearch = document.getElementById('searchInput').value.trim();
+            renderOffers();
+        }
+
+        document.getElementById('searchInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                applySearch();
+            }
+        });
+
+        // Initialize: load data from server then render
+        window.onload = async function () {
+            try {
+                await window.OffersDB.refreshOffers();
+                await window.LoginDB.refreshUsers();
+            } catch (e) {
+                console.error('Failed to load data', e);
+            }
+            renderOffers();
+        };
+
         // --- TOGGLE LIKE FUNCTION ---
-        function toggleLike(btn, id) {
+        async function toggleLike(btn, id) {
             let user = getCurrent();
-            
+
             if (!user) {
                 alert("Please login to save favorites.");
                 window.location.href = 'account.html';
                 return;
             }
 
-            // Initialize favorites array if it doesn't exist
             if (!user.favorites) user.favorites = [];
 
             const index = user.favorites.indexOf(id);
 
-            if (index === -1) {
-                // ADD to favorites
-                user.favorites.push(id);
-                btn.classList.add('liked');
-            } else {
-                // REMOVE from favorites
-                user.favorites.splice(index, 1);
-                btn.classList.remove('liked');
-            }
-
-            // Save to Current User Session
-            saveCurrent(user);
-
-            // Also update the main Users Database so it persists on logout
-            let allUsers = getUsers();
-            const userIdx = allUsers.findIndex(u => u.username === user.username);
-            if (userIdx !== -1) {
-                allUsers[userIdx] = user;
-                saveUsers(allUsers);
+            try {
+                if (index === -1) {
+                    await API.addFavorite(id);
+                    btn.classList.add('liked');
+                } else {
+                    await API.removeFavorite(id);
+                    btn.classList.remove('liked');
+                }
+            } catch (e) {
+                alert('Failed to update favorites.');
             }
         }
     </script>
 </body>
+
 </html>

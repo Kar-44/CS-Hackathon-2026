@@ -1,0 +1,86 @@
+// login.db - User Database Client (Server-backed)
+// Provides window.LoginDB interface - delegates to API server
+
+window.LoginDB = (function() {
+
+    // Synchronous cache getter for backward compat in rendering code
+    function getUsers() {
+        // Return cached users if available, otherwise empty
+        const cached = sessionStorage.getItem('_cachedUsers');
+        return cached ? JSON.parse(cached) : [];
+    }
+
+    function saveUsers() {
+        // No-op: server is the source of truth
+    }
+
+    // Async function to refresh the user cache from server
+    async function refreshUsers() {
+        try {
+            const users = await API.getUsers();
+            sessionStorage.setItem('_cachedUsers', JSON.stringify(users));
+            return users;
+        } catch (e) {
+            console.error('Failed to refresh users', e);
+            return [];
+        }
+    }
+
+    return {
+        getUsers: getUsers,
+        saveUsers: saveUsers,
+        refreshUsers: refreshUsers,
+
+        /**
+         * Register a new user (async)
+         */
+        registerUser: async function(username, email, password) {
+            try {
+                const result = await API.register(username, email, password);
+                return result;
+            } catch (e) {
+                return { success: false, message: e.message || 'Registration failed' };
+            }
+        },
+
+        /**
+         * Authenticate user (async)
+         */
+        loginUser: async function(username, password) {
+            try {
+                const result = await API.login(username, password);
+                if (result.success) {
+                    await refreshUsers(); // Cache users after login
+                    return result.user;
+                }
+                return null;
+            } catch (e) {
+                return null;
+            }
+        },
+
+        updateUser: async function(updatedUser) {
+            try {
+                const result = await API.updateProfile({
+                    name: updatedUser.profile.name,
+                    email: updatedUser.profile.email || updatedUser.email,
+                    phone: updatedUser.profile.phone,
+                    avatar: updatedUser.profile.avatar
+                });
+                await refreshUsers();
+                return result.success;
+            } catch (e) {
+                return false;
+            }
+        },
+
+        changePassword: async function(username, oldPassword, newPassword) {
+            try {
+                const result = await API.changePassword(oldPassword, newPassword);
+                return result.success;
+            } catch (e) {
+                return false;
+            }
+        }
+    };
+})();

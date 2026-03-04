@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
     <header>
@@ -14,19 +16,22 @@
             <a href="index.html" class="logo"><i class="fas fa-bicycle"></i> CampusCycle</a>
             <div class="nav-links">
                 <a href="favorites.html" class="nav-item"><i class="far fa-heart"></i></a>
-                <a href="#" class="nav-item"><i class="far fa-comment-dots"></i></a>
-                <a href="account.html" class="nav-item" style="color: var(--primary);"><i class="fas fa-user-circle"></i></a>
+                <a href="chats.html" class="nav-item"><i class="far fa-comment-dots"></i></a>
+                <a href="account.html" class="nav-item" style="color: var(--primary);"><i
+                        class="fas fa-user-circle"></i></a>
                 <a href="add-offer.html" class="nav-item btn-add-offer"><i class="fas fa-plus"></i> Add Offer</a>
             </div>
         </nav>
     </header>
 
     <div class="container">
-        
+
         <div id="authSection" class="auth-wrapper">
             <div style="display:flex; margin-bottom: 20px; border-bottom: 1px solid #eee;">
-                <button class="sidebar-btn active" id="tabLogin" onclick="toggleAuth('login')" style="text-align:center;">Login</button>
-                <button class="sidebar-btn" id="tabRegister" onclick="toggleAuth('register')" style="text-align:center;">Register</button>
+                <button class="sidebar-btn active" id="tabLogin" onclick="toggleAuth('login')"
+                    style="text-align:center;">Login</button>
+                <button class="sidebar-btn" id="tabRegister" onclick="toggleAuth('register')"
+                    style="text-align:center;">Register</button>
             </div>
 
             <form id="loginForm">
@@ -47,6 +52,10 @@
 
             <form id="registerForm" class="hidden">
                 <div class="error-msg" id="regError">Error message.</div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="regEmail" class="form-control" required>
+                </div>
                 <div class="form-group">
                     <label>Username</label>
                     <input type="text" id="regUser" class="form-control" required>
@@ -74,10 +83,11 @@
         </div>
 
         <div id="profileSection" class="account-layout hidden">
-            
+
             <aside class="account-sidebar">
                 <div style="text-align: center; margin-bottom: 20px;">
-                    <img src="" id="sidebarAvatar" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+                    <img src="" id="sidebarAvatar"
+                        style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
                     <h4 id="sidebarName" style="margin-top: 10px;">User</h4>
                 </div>
                 <button class="sidebar-btn active" onclick="showSection('details', this)">
@@ -93,7 +103,7 @@
             </aside>
 
             <main class="account-content">
-                
+
                 <div id="detailsView">
                     <h2>Edit Profile</h2>
                     <br>
@@ -101,9 +111,10 @@
                         <div class="profile-pic-container" onclick="document.getElementById('avatarInput').click()">
                             <img src="" id="mainAvatar" class="profile-pic">
                             <div class="profile-pic-overlay"><i class="fas fa-camera"></i></div>
-                            <input type="file" id="avatarInput" hidden accept="image/png, image/jpeg, image/jpg" onchange="previewAvatar(this)">
+                            <input type="file" id="avatarInput" hidden accept="image/png, image/jpeg, image/jpg"
+                                onchange="previewAvatar(this)">
                         </div>
-                        
+
                         <div class="form-group">
                             <label>Full Name</label>
                             <input type="text" id="profName" class="form-control">
@@ -146,7 +157,8 @@
                                 <i class="fas fa-eye toggle-password" onclick="togglePass('newPassConf', this)"></i>
                             </div>
                         </div>
-                        <button type="submit" class="submit-btn" style="background-color: #333;">Update Password</button>
+                        <button type="submit" class="submit-btn" style="background-color: #333;">Update
+                            Password</button>
                     </form>
                 </div>
 
@@ -154,7 +166,7 @@
                     <h2>My Active Offers</h2>
                     <br>
                     <div id="myPostsList">
-                        </div>
+                    </div>
                 </div>
 
             </main>
@@ -184,31 +196,43 @@
             </div>
             <div style="display: flex; gap: 10px;">
                 <button class="submit-btn" onclick="saveEdit()">Save</button>
-                <button class="submit-btn" style="background: #ccc;" onclick="document.getElementById('editModal').style.display='none'">Cancel</button>
+                <button class="submit-btn" style="background: #ccc;"
+                    onclick="document.getElementById('editModal').style.display='none'">Cancel</button>
             </div>
         </div>
     </div>
 
+    <script src="api.js"></script>
+    <script src="login.db"></script>
+    <script src="offers.db"></script>
     <script>
         // --- AUTH TOGGLE ---
         function toggleAuth(view) {
-            if(view === 'login') {
-                document.getElementById('loginForm').classList.remove('hidden');
-                document.getElementById('registerForm').classList.add('hidden');
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+
+            if (view === 'login') {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
                 document.getElementById('tabLogin').classList.add('active');
                 document.getElementById('tabRegister').classList.remove('active');
+                // Enable/disable required to prevent hidden fields from blocking submit
+                loginForm.querySelectorAll('[required]').forEach(el => el.disabled = false);
+                registerForm.querySelectorAll('input, select').forEach(el => el.disabled = true);
             } else {
-                document.getElementById('loginForm').classList.add('hidden');
-                document.getElementById('registerForm').classList.remove('hidden');
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
                 document.getElementById('tabLogin').classList.remove('active');
                 document.getElementById('tabRegister').classList.add('active');
+                registerForm.querySelectorAll('input, select').forEach(el => el.disabled = false);
+                loginForm.querySelectorAll('input').forEach(el => el.disabled = true);
             }
         }
 
         // --- PASSWORD VISIBILITY ---
         function togglePass(inputId, icon) {
             const input = document.getElementById(inputId);
-            if(input.type === "password") {
+            if (input.type === "password") {
                 input.type = "text";
                 icon.classList.remove('fa-eye');
                 icon.classList.add('fa-eye-slash');
@@ -220,47 +244,43 @@
         }
 
         // --- GLOBAL DATA HELPERS ---
-        function getUsers() { return JSON.parse(localStorage.getItem('campusUsers')) || []; }
-        function saveUsers(users) { localStorage.setItem('campusUsers', JSON.stringify(users)); }
-        function getCurrent() { return JSON.parse(localStorage.getItem('currentUser')); }
-        function saveCurrent(user) { localStorage.setItem('currentUser', JSON.stringify(user)); }
-        function getOffers() { return JSON.parse(localStorage.getItem('campusOffers')) || []; }
-        function saveOffers(offers) { localStorage.setItem('campusOffers', JSON.stringify(offers)); }
+        function getCurrent() { return API.getCurrentUser(); }
+        function saveCurrent(user) { API.setCurrentUser(user); }
 
         // --- REGISTER ---
-        document.getElementById('registerForm').addEventListener('submit', e => {
+        document.getElementById('registerForm').addEventListener('submit', async e => {
             e.preventDefault();
+            const email = document.getElementById('regEmail').value;
             const user = document.getElementById('regUser').value;
             const userConf = document.getElementById('regUserConfirm').value;
             const pass = document.getElementById('regPass').value;
             const passConf = document.getElementById('regPassConfirm').value;
             const err = document.getElementById('regError');
 
-            if(user !== userConf) return showErr(err, "Usernames do not match");
-            if(pass !== passConf) return showErr(err, "Passwords do not match");
+            if (user !== userConf) return showErr(err, "Usernames do not match");
+            if (pass !== passConf) return showErr(err, "Passwords do not match");
 
-            let users = getUsers();
-            if(users.find(u => u.username === user)) return showErr(err, "Username taken");
+            const result = await window.LoginDB.registerUser(user, email, pass);
+            if (!result.success) {
+                return showErr(err, result.message);
+            }
 
-            // Create User (Default avatar is a placeholder)
-            users.push({ username: user, password: pass, profile: { avatar: 'https://via.placeholder.com/150' } });
-            saveUsers(users);
-            
             alert('Registered! Please login.');
             toggleAuth('login');
             e.target.reset();
+            err.style.display = 'none';
         });
 
         // --- LOGIN ---
-        document.getElementById('loginForm').addEventListener('submit', e => {
+        document.getElementById('loginForm').addEventListener('submit', async e => {
             e.preventDefault();
             const user = document.getElementById('loginUser').value;
             const pass = document.getElementById('loginPass').value;
-            
-            const found = getUsers().find(u => u.username === user && u.password === pass);
-            if(found) {
-                saveCurrent(found);
+
+            const foundUser = await window.LoginDB.loginUser(user, pass);
+            if (foundUser) {
                 checkSession();
+                document.getElementById('loginError').style.display = 'none';
             } else {
                 showErr(document.getElementById('loginError'), "Invalid credentials");
             }
@@ -268,22 +288,21 @@
 
         // --- LOGOUT ---
         function logout() {
-            localStorage.removeItem('currentUser');
+            API.logout();
             location.reload();
         }
 
         // --- CHECK SESSION & LOAD UI ---
         function checkSession() {
             const user = getCurrent();
-            if(user) {
+            if (user) {
                 document.getElementById('authSection').classList.add('hidden');
                 document.getElementById('profileSection').classList.remove('hidden');
-                
-                // Load Profile Data
+
                 document.getElementById('sidebarName').innerText = user.profile.name || user.username;
                 document.getElementById('sidebarAvatar').src = user.profile.avatar;
                 document.getElementById('mainAvatar').src = user.profile.avatar;
-                
+
                 document.getElementById('profName').value = user.profile.name || '';
                 document.getElementById('profEmail').value = user.profile.email || '';
                 document.getElementById('profPhone').value = user.profile.phone || '';
@@ -299,8 +318,8 @@
         function showSection(section, btn) {
             document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
-            if(section === 'details') {
+
+            if (section === 'details') {
                 document.getElementById('detailsView').classList.remove('hidden');
                 document.getElementById('postsView').classList.add('hidden');
             } else {
@@ -311,29 +330,25 @@
         }
 
         // --- UPDATE PROFILE ---
-        document.getElementById('profileForm').addEventListener('submit', e => {
+        document.getElementById('profileForm').addEventListener('submit', async e => {
             e.preventDefault();
-            let user = getCurrent();
-            let users = getUsers();
 
-            user.profile.name = document.getElementById('profName').value;
-            user.profile.email = document.getElementById('profEmail').value;
-            user.profile.phone = document.getElementById('profPhone').value;
-            user.profile.avatar = document.getElementById('mainAvatar').src;
-
-            // Update in Users Array
-            const idx = users.findIndex(u => u.username === user.username);
-            users[idx] = user;
-            
-            saveUsers(users);
-            saveCurrent(user);
-            
-            alert('Profile Saved');
-            checkSession(); // Refresh sidebars
+            try {
+                await API.updateProfile({
+                    name: document.getElementById('profName').value,
+                    email: document.getElementById('profEmail').value,
+                    phone: document.getElementById('profPhone').value,
+                    avatar: document.getElementById('mainAvatar').src
+                });
+                alert('Profile Saved');
+                checkSession();
+            } catch (e) {
+                alert('Error submitting profile update');
+            }
         });
 
         function previewAvatar(input) {
-            if(input.files && input.files[0]) {
+            if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = e => document.getElementById('mainAvatar').src = e.target.result;
                 reader.readAsDataURL(input.files[0]);
@@ -341,41 +356,42 @@
         }
 
         // --- CHANGE PASSWORD ---
-        document.getElementById('passwordForm').addEventListener('submit', e => {
+        document.getElementById('passwordForm').addEventListener('submit', async e => {
             e.preventDefault();
-            let user = getCurrent();
-            let users = getUsers();
             const oldP = document.getElementById('oldPass').value;
             const newP = document.getElementById('newPass').value;
             const confP = document.getElementById('newPassConf').value;
             const msg = document.getElementById('passMsg');
 
-            if(user.password !== oldP) return showErr(msg, "Incorrect old password");
-            if(newP !== confP) return showErr(msg, "New passwords do not match");
+            if (newP !== confP) return showErr(msg, "New passwords do not match");
 
-            user.password = newP;
-            const idx = users.findIndex(u => u.username === user.username);
-            users[idx] = user;
-
-            saveUsers(users);
-            saveCurrent(user);
-            alert('Password changed successfully');
-            e.target.reset();
+            const result = await window.LoginDB.changePassword(null, oldP, newP);
+            if (result) {
+                alert('Password changed successfully');
+                e.target.reset();
+                msg.style.display = 'none';
+            } else {
+                showErr(msg, "Incorrect old password");
+            }
         });
 
         // --- MY POSTS LOGIC ---
-        function loadMyPosts() {
+        async function loadMyPosts() {
             const user = getCurrent();
-            const offers = getOffers();
             const container = document.getElementById('myPostsList');
+            container.innerHTML = '<p style="color:#666; text-align:center;">Loading...</p>';
+
+            try {
+                await window.OffersDB.refreshOffers();
+            } catch (e) { /* use cache */ }
+
+            const offers = window.OffersDB.getOffers();
+
             container.innerHTML = '';
 
-            // Filter offers where seller name matches user's name
-            // Note: In add-offer we used to save 'You', now we should save username.
-            // We will match based on 'sellerUsername' if available, or 'seller' text
             const myOffers = offers.filter(o => o.sellerUsername === user.username);
 
-            if(myOffers.length === 0) {
+            if (myOffers.length === 0) {
                 container.innerHTML = '<p style="color:#666; text-align:center;">You have not posted any offers.</p>';
                 return;
             }
@@ -398,19 +414,17 @@
             });
         }
 
-        function deletePost(id) {
-            if(confirm('Are you sure you want to delete this offer?')) {
-                let offers = getOffers();
-                offers = offers.filter(o => o.id !== id);
-                saveOffers(offers);
+        async function deletePost(id) {
+            if (confirm('Are you sure you want to delete this offer?')) {
+                await window.OffersDB.deleteOffer(id);
                 loadMyPosts();
             }
         }
 
         function openEdit(id) {
-            const offers = getOffers();
+            const offers = window.OffersDB.getOffers();
             const offer = offers.find(o => o.id === id);
-            if(offer) {
+            if (offer) {
                 document.getElementById('editId').value = offer.id;
                 document.getElementById('editTitle').value = offer.title;
                 document.getElementById('editPrice').value = offer.price;
@@ -418,18 +432,14 @@
             }
         }
 
-        function saveEdit() {
+        async function saveEdit() {
             const id = parseInt(document.getElementById('editId').value);
-            let offers = getOffers();
-            const idx = offers.findIndex(o => o.id === id);
-            
-            if(idx > -1) {
-                offers[idx].title = document.getElementById('editTitle').value;
-                offers[idx].price = document.getElementById('editPrice').value;
-                saveOffers(offers);
-                document.getElementById('editModal').style.display = 'none';
-                loadMyPosts();
-            }
+            const title = document.getElementById('editTitle').value;
+            const price = document.getElementById('editPrice').value;
+
+            await window.OffersDB.updateOffer(id, { title, price });
+            document.getElementById('editModal').style.display = 'none';
+            loadMyPosts();
         }
 
         function showErr(el, msg) {
@@ -440,4 +450,5 @@
         checkSession();
     </script>
 </body>
+
 </html>
