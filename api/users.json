@@ -1,0 +1,123 @@
+{
+    "users": [
+        {
+            "username": "keruzu",
+            "password": "$2y$10$b8Drw6an5FhMcoxTLc3WjOFKucH24\/cHD7uLd45ywVnSWDQLAFV0O",
+            "email": "keruzu@gmail.com",
+            "name": "",
+            "registered": "2026-02-26 12:29:13",
+            "profile": {
+                "avatar": "uploads\/avatars\/keruzu_1772115494.jpg",
+                "name": "keruzu",
+                "email": "keruzu@gmail.com",
+                "phone": ""
+            },
+            "favorites": [
+                1772448135,
+                1772465565,
+                1772464090
+            ]
+        },
+        {
+            "username": "kelly",
+            "password": "$2y$10$xSj1Lici\/YTPl9.0\/4NDoe9U2ZdKIqcekGL0K38Qp\/DpqhG.Mlb4W",
+            "email": "",
+            "name": "",
+            "registered": "2026-02-26 13:04:27",
+            "profile": {
+                "avatar": "https:\/\/via.placeholder.com\/150",
+                "name": "kelly",
+                "email": "",
+                "phone": ""
+            },
+            "favorites": []
+        },
+        {
+            "username": "Karol",
+            "password": "$2y$10$Wat.6sycXmeZAY5Omg3Ya.9JEsLsOWK4g.HOS5w1NkAirW7STMUdy",
+            "email": "kh@gmail.com",
+            "name": "",
+            "registered": "2026-02-26 13:07:05",
+            "profile": {
+                "avatar": "https:\/\/via.placeholder.com\/150",
+                "name": "Karl",
+                "email": "kh@gmail.com",
+                "phone": ""
+            },
+            "favorites": [
+                1772448135
+            ]
+        },
+        {
+            "username": "hello",
+            "password": "$2y$10$.XPniwT4NFzEXp41p4dzAO81R5IIRfpi11IygxtpJjyb6E6ntFkPK",
+            "email": "",
+            "name": "",
+            "registered": "2026-02-26 13:25:50",
+            "profile": {
+                "avatar": "https:\/\/via.placeholder.com\/150",
+                "name": "hello",
+                "email": "",
+                "phone": ""
+            },
+            "favorites": []
+        },
+        {
+            "username": "Sanji",
+            "password": "$2y$10$37HFbHKkfoFBKpDKa\/Twnua8oYYPsL48DHq3\/zf\/FA8zjBzKjexQG",
+            "email": "",
+            "name": "",
+            "registered": "2026-02-26 14:17:15",
+            "profile": {
+                "avatar": "https:\/\/via.placeholder.com\/150",
+                "name": "",
+                "email": "",
+                "phone": ""
+            },
+            "favorites": []
+        },
+        {
+            "username": "Djsa",
+            "password": "$2y$10$qEvpb7rFf1zu1ZlRrOBkh.mMACag2oc0Lej.NXJ6loDnkEYaM5Dqy",
+            "email": "djsankoma@gmail.com",
+            "name": "",
+            "registered": "2026-02-26 14:30:33",
+            "profile": {
+                "avatar": "uploads\/avatars\/Djsa_1772116266.jpeg",
+                "name": "David Safo-Ankoma",
+                "email": "djsankoma@gmail.com",
+                "phone": "899524800"
+            },
+            "favorites": []
+        },
+        {
+            "username": "L1ngL1ng",
+            "password": "$2y$10$aUKSqZGCiJtt1BS7TaDvL.P3AA5sutwVGzBC1\/qwadohQRJRx1ln.",
+            "email": "",
+            "name": "",
+            "registered": "2026-02-26 14:30:55",
+            "profile": {
+                "avatar": "https:\/\/via.placeholder.com\/150",
+                "name": "",
+                "email": "",
+                "phone": ""
+            },
+            "favorites": []
+        },
+        {
+            "username": "Admin",
+            "password": "",
+            "email": "",
+            "registered": "2026-03-02 20:30:33",
+            "profile": {
+                "avatar": "uploads\/avatars\/Admin_1772478054.jpg",
+                "name": "Admin",
+                "email": "",
+                "phone": ""
+            },
+            "favorites": [
+                1772465565
+            ]
+        }
+    ]
+}

@@ -1,0 +1,15 @@
+[
+    {
+        "id": "1772476607_1772465565",
+        "username": "keruzu",
+        "offerId": 1772465565,
+        "offerTitle": "Money",
+        "offerImage": "https:\/\/via.placeholder.com\/200x150",
+        "targetPrice": 20,
+        "currentPrice": 20,
+        "originalPrice": 50,
+        "created": 1772476607,
+        "notified": true,
+        "active": true
+    }
+]

@@ -2,32 +2,580 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>My Favorites - CampusCycle</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Theme variables */
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f4f7f6;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --border-color: #eee;
+            --card-bg: #ffffff;
+            --header-bg: #ffffff;
+            --shadow-color: rgba(0,0,0,0.05);
+            --heart-color: #e60058;
+            --empty-state-color: #999;
+            --category-hover: #ffebf2;
+            --modal-overlay: rgba(0,0,0,0.5);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #1a1a1a;
+            --text-primary: #f0f0f0;
+            --text-secondary: #aaa;
+            --border-color: #333;
+            --card-bg: #2a2a2a;
+            --header-bg: #2a2a2a;
+            --shadow-color: rgba(0,0,0,0.4);
+            --heart-color: #ff4d8c;
+            --empty-state-color: #888;
+            --category-hover: #3a1a2a;
+            --modal-overlay: rgba(0,0,0,0.7);
+        }
+
+        [data-theme="high-contrast"] {
+            --bg-primary: #000;
+            --bg-secondary: #000;
+            --text-primary: #fff;
+            --text-secondary: #ff0;
+            --border-color: #ff0;
+            --card-bg: #000;
+            --header-bg: #000;
+            --shadow-color: rgba(255,255,0,0.3);
+            --heart-color: #ff0;
+            --empty-state-color: #ff0;
+            --category-hover: #333;
+            --modal-overlay: rgba(0,0,0,0.9);
+        }
+
+        body {
+            background-color: var(--bg-color, #f4f7f6);
+            color: var(--text-dark, #333);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        header {
+            background-color: var(--card-bg, #ffffff);
+            box-shadow: var(--shadow, 0 2px 8px rgba(0,0,0,0.05));
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            background-color: var(--card-bg, #ffffff);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        nav a {
+            color: var(--text-dark, #333);
+            text-decoration: none;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary) !important;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-item {
+            color: var(--text-dark, #333);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-item:hover {
+            background-color: var(--bg-color, #f4f7f6);
+        }
+
+        .btn-add-offer {
+            background-color: var(--primary);
+            color: white !important;
+        }
+
+        .btn-add-offer:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Theme toggle button */
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-dark, #333);
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--bg-color, #f4f7f6);
+            border-color: var(--primary);
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-dark, #333);
+        }
+
+        .favorites-header {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .favorites-header h2 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+        }
+
+        .category-list {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow, 0 2px 8px rgba(0,0,0,0.05));
+        }
+
+        .category-list h3 {
+            color: var(--text-dark, #333);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .category-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .category-list li {
+            color: var(--text-light, #666);
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .category-list li i {
+            width: 20px;
+        }
+
+        .category-list li:hover {
+            background-color: var(--category-hover);
+        }
+
+        .category-list li.active {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .offers-feed {
+            min-height: 400px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--empty-state-color);
+            background: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: var(--shadow, 0 2px 8px rgba(0,0,0,0.05));
+            width: 100%;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: var(--empty-state-color);
+        }
+        
+        .empty-state h3 {
+            color: var(--text-light, #666);
+            margin-bottom: 10px;
+        }
+        
+        .empty-state p {
+            margin-bottom: 25px;
+            color: var(--text-light, #666);
+        }
+        
+        .empty-state a {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+
+        /* Offer card styles */
+        .offer-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow, 0 2px 8px rgba(0,0,0,0.05));
+            display: flex;
+        }
+
+        .offer-card:hover {
+            box-shadow: 0 8px 16px var(--shadow-color);
+            transform: translateY(-2px);
+        }
+
+        .card-image {
+            width: 200px;
+            height: 150px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-details {
+            flex: 1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-header {
+            margin-bottom: 10px;
+        }
+
+        .title-price-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .offer-title {
+            color: var(--text-dark, #333);
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .offer-price {
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .offer-desc {
+            color: var(--text-light, #666);
+            margin: 0;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .seller-info {
+            display: flex;
+            align-items: center;
+            color: var(--text-light, #666);
+            font-size: 0.9rem;
+        }
+
+        .seller-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .contact-btn {
+            padding: 6px 15px;
+            background: var(--card-bg);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .heart-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--card-bg);
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--heart-color);
+            font-size: 1.2rem;
+            box-shadow: var(--shadow, 0 2px 8px rgba(0,0,0,0.05));
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .heart-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .heart-btn.liked {
+            color: var(--heart-color);
+        }
+
+        /* Price alert styles */
+        .price-drop-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 5;
+        }
+        
+        .alert-details {
+            margin-top: 15px;
+            padding: 10px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+        }
+        
+        .alert-status {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .refresh-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4CAF50;
+            margin-left: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        /* Modal styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--modal-overlay);
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-box {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            color: var(--text-dark, #333);
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .submit-btn {
+            padding: 10px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #notificationContainer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: var(--header-bg);
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 4px 8px var(--shadow-color);
+                z-index: 1000;
+            }
+
+            .nav-links.show {
+                display: flex;
+            }
+
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .offer-card {
+                flex-direction: column;
+            }
+
+            .card-image {
+                width: 100%;
+                height: 200px;
+            }
+
+            .theme-toggle span {
+                display: none;
+            }
+        }
+    </style>
+
+    <style>
+        /* ===== CRITICAL OVERRIDES ===== */
+        .theme-toggle {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            align-items: center !important;
+        }
+        .theme-btn {
+            width: 36px !important;
+            height: 36px !important;
+            min-width: 36px !important;
+            min-height: 36px !important;
+            max-width: 36px !important;
+            max-height: 36px !important;
+            padding: 0 !important;
+            box-sizing: border-box !important;
+        }
+        .offer-card {
+            border: 2px solid var(--primary) !important;
+        }
+    </style>
 </head>
 <body>
 
     <header>
         <nav>
-            <a href="index.html" class="logo">
-                <i class="fas fa-bicycle"></i> CampusCycle
+            <a href="index.php" class="logo">
+                <img src="uploads/campus-logo.png" style="height:32px;width:32px;object-fit:contain;vertical-align:middle;margin-right:6px;"> CampusCycle
             </a>
             
+            <div class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+            
             <div class="nav-links">
-                <a href="favorites.html" class="nav-item" style="color: var(--primary);">
-                    <i class="fas fa-heart"></i>
-                </a>
-                <a href="#" class="nav-item"><i class="far fa-comment-dots"></i></a>
-                <a href="account.html" class="nav-item"><i class="far fa-user-circle"></i></a>
-                <a href="add-offer.html" class="nav-item btn-add-offer"><i class="fas fa-plus"></i> Add Offer</a>
+                <a href="favorites.html" class="nav-item" title="Favorites" style="color: var(--primary) !important;"><i class="fas fa-heart"></i></a>
+                <a href="chats.html" class="nav-item" title="Chats"><i class="far fa-comment-dots"></i></a>
+                <a href="account.php" class="nav-item" title="My Account"><i class="far fa-user-circle"></i></a>
+                <a href="add-offer.php" class="nav-item btn-add-offer"><i class="fas fa-plus"></i> Add Offer</a>
             </div>
         </nav>
     </header>
 
     <div class="favorites-header">
-        <h2>Saved Offers</h2>
+        <h2>My Lists</h2>
     </div>
 
     <div class="container">
@@ -36,134 +584,977 @@
             <div class="category-list">
                 <h3>Your Lists</h3>
                 <ul>
-                    <li style="background-color: var(--primary-light); color: var(--primary-dark);">
+                    <li id="tabFavorites" class="active" onclick="switchTab('favorites', this)">
                         <i class="fas fa-heart"></i> All Favorites
                     </li>
-                    <li><i class="fas fa-history"></i> Recently Viewed</li>
-                    <li><i class="fas fa-bell"></i> Price Alerts</li>
+                    <li id="tabRecent" onclick="switchTab('recent', this)">
+                        <i class="fas fa-history"></i> Recently Viewed
+                    </li>
+                    <li id="tabPriceAlerts" onclick="switchTab('priceAlerts', this)">
+                        <i class="fas fa-bell"></i> Price Alerts
+                        <span id="alertBadge" style="display: none; background: #ff4757; color: white; border-radius: 10px; padding: 2px 6px; font-size: 0.7rem; margin-left: 5px;">!</span>
+                    </li>
                 </ul>
             </div>
         </aside>
 
         <div class="offers-feed" id="favFeed">
+            <!-- Content will be loaded here -->
+            <div class="empty-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading...</p>
             </div>
+        </div>
     </div>
 
+    <!-- Error Modal -->
+    <div class="modal-overlay" id="errorModal">
+        <div class="modal-box">
+            <div class="modal-icon" style="color: #ff4757;"><i class="fas fa-exclamation-circle"></i></div>
+            <h3>Error!</h3>
+            <p id="errorMessage">Something went wrong.</p>
+            <button class="submit-btn" onclick="document.getElementById('errorModal').style.display='none'" style="margin-top: 15px; background: #ff4757; color: white;">OK</button>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer"></div>
+
     <script>
+        // Theme management
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('campuscycle_theme', theme);
+            
+            const toggle = document.getElementById('themeToggle');
+            if (toggle) {
+                const icon = toggle.querySelector('i');
+                const text = toggle.querySelector('span');
+                
+                if (theme === 'dark') {
+                    icon.className = 'fas fa-sun';
+                    text.textContent = 'Light Mode';
+                } else {
+                    icon.className = 'fas fa-moon';
+                    text.textContent = 'Dark Mode';
+                }
+            }
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            setTheme(newTheme);
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('campuscycle_theme');
+            if (savedTheme) {
+                setTheme(savedTheme);
+            } else {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                setTheme(prefersDark ? 'dark' : 'light');
+            }
+        }
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            document.querySelector('.nav-links').classList.toggle('show');
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const nav = document.querySelector('.nav-links');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (nav && toggle && !nav.contains(event.target) && !toggle.contains(event.target)) {
+                nav.classList.remove('show');
+            }
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-item').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelector('.nav-links').classList.remove('show');
+            });
+        });
+
         // --- HELPERS ---
         function getCurrent() { return JSON.parse(localStorage.getItem('currentUser')); }
         function saveCurrent(user) { localStorage.setItem('currentUser', JSON.stringify(user)); }
         function getUsers() { return JSON.parse(localStorage.getItem('campusUsers')) || []; }
         function saveUsers(users) { localStorage.setItem('campusUsers', JSON.stringify(users)); }
+        function getOffers() { return JSON.parse(localStorage.getItem('campusOffers')) || []; }
+
+        // Recently Viewed functions
+        const RECENT_VIEWS_KEY = 'recentlyViewed';
+        const MAX_RECENT_ITEMS = 20;
+
+        function getRecentlyViewed() {
+            return JSON.parse(localStorage.getItem(RECENT_VIEWS_KEY)) || [];
+        }
+
+        function addToRecentlyViewed(offerId) {
+            let recent = getRecentlyViewed();
+            recent = recent.filter(id => id !== offerId);
+            recent.unshift(offerId);
+            if (recent.length > MAX_RECENT_ITEMS) {
+                recent = recent.slice(0, MAX_RECENT_ITEMS);
+            }
+            localStorage.setItem(RECENT_VIEWS_KEY, JSON.stringify(recent));
+        }
+
+        function clearRecentlyViewed() {
+            localStorage.removeItem(RECENT_VIEWS_KEY);
+            if (currentTab === 'recent') {
+                loadRecentlyViewed();
+            }
+        }
+
+        // --- SHOW ERROR FUNCTION ---
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorModal').style.display = 'flex';
+            
+            setTimeout(() => {
+                document.getElementById('errorModal').style.display = 'none';
+            }, 3000);
+        }
+
+        // --- SHOW NOTIFICATION ---
+        function showNotification(title, message, type = 'info', onClick = null) {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            
+            const colors = {
+                success: '#4CAF50',
+                error: '#ff4757',
+                warning: '#ff9800',
+                info: '#2196F3'
+            };
+            
+            notification.style.background = colors[type] || colors.info;
+            notification.style.color = 'white';
+            notification.style.padding = '15px 20px';
+            notification.style.borderRadius = '8px';
+            notification.style.marginBottom = '10px';
+            notification.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+            notification.style.animation = 'slideIn 0.3s ease';
+            notification.style.cursor = onClick ? 'pointer' : 'default';
+            
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-bell'}" style="font-size: 1.5rem;"></i>
+                    <div>
+                        <strong>${title}</strong>
+                        <div style="font-size: 0.9rem; margin-top: 3px;">${message}</div>
+                    </div>
+                </div>
+            `;
+            
+            if (onClick) {
+                notification.onclick = onClick;
+            }
+            
+            container.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 8000);
+        }
+
+        // --- TAB SWITCHING ---
+        let currentTab = 'favorites';
+        let autoRefreshInterval = null;
+
+        function switchTab(tab, element) {
+            document.querySelectorAll('.category-list li').forEach(li => {
+                li.classList.remove('active');
+            });
+            element.classList.add('active');
+            
+            currentTab = tab;
+            loadTabContent();
+            
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+                autoRefreshInterval = null;
+            }
+            
+            if (tab === 'priceAlerts') {
+                autoRefreshInterval = setInterval(checkForPriceDrops, 30000);
+            }
+        }
+
+        // --- LOAD TAB CONTENT ---
+        function loadTabContent() {
+            switch(currentTab) {
+                case 'favorites':
+                    loadFavorites();
+                    break;
+                case 'recent':
+                    loadRecentlyViewed();
+                    break;
+                case 'priceAlerts':
+                    loadPriceAlerts();
+                    break;
+                default:
+                    loadFavorites();
+            }
+        }
 
         // --- LOAD FAVORITES ---
-        window.onload = function() {
+        function loadFavorites() {
             const user = getCurrent();
             const feed = document.getElementById('favFeed');
             
-            // 1. Check Login
             if (!user) {
                 feed.innerHTML = `
-                    <div style="text-align:center; padding: 40px;">
+                    <div class="empty-state">
+                        <i class="fas fa-heart"></i>
                         <h3>Please Login</h3>
-                        <p style="color:#666; margin-bottom:20px;">You need to be logged in to see your favorites.</p>
-                        <a href="account.html" class="btn-add-offer" style="text-decoration:none;">Go to Login</a>
+                        <p>You need to be logged in to see your favorites.</p>
+                        <a href="account.php">Go to Login</a>
                     </div>`;
                 return;
             }
 
-            // 2. Check for Favorites
-            if (!user.favorites || user.favorites.length === 0) {
-                feed.innerHTML = '<p style="color:#666;">You haven\'t liked any offers yet.</p>';
+            feed.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading your favorites...</p>
+                </div>`;
+
+            fetch('api/get-user-favorites.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        user.favorites = data.favorites;
+                        localStorage.setItem('currentUser', JSON.stringify(user));
+                        return fetch('get-offers.php');
+                    } else {
+                        throw new Error(data.message || 'Failed to load favorites');
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const allOffers = data.offers || [];
+                    displayFavorites(allOffers, user);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    const allOffers = getOffers();
+                    displayFavorites(allOffers, user);
+                });
+        }
+
+        function displayFavorites(allOffers, user) {
+            const feed = document.getElementById('favFeed');
+            const myFavs = allOffers.filter(offer => user.favorites.includes(offer.id));
+
+            if (myFavs.length === 0) {
+                feed.innerHTML = `
+                    <div class="empty-state">
+                        <i class="far fa-heart"></i>
+                        <p>You haven't liked any offers yet.</p>
+                        <a href="index.php">Browse Offers</a>
+                    </div>`;
                 return;
             }
 
-            // 3. Get all offers and Filter
-            const allOffers = JSON.parse(localStorage.getItem('campusOffers')) || [];
-            const usersDB = getUsers();
-
-            // Filter offers that exist in user.favorites array
-            const myFavs = allOffers.filter(offer => user.favorites.includes(offer.id));
-
-            // 4. Render
+            feed.innerHTML = '';
             myFavs.forEach(offer => {
-                
-                // Resolve Seller Info
-                let sellerName = offer.seller || "Unknown";
-                let avatarHtml = `<div class="seller-avatar">${sellerName.substring(0,2).toUpperCase()}</div>`;
-                
-                if (offer.sellerUsername) {
-                    const sellerObj = usersDB.find(u => u.username === offer.sellerUsername);
-                    if (sellerObj) {
-                        sellerName = sellerObj.profile.name || sellerObj.username;
-                        if (sellerObj.profile.avatar && sellerObj.profile.avatar.length > 50) {
-                            avatarHtml = `<img src="${sellerObj.profile.avatar}" style="width:30px; height:30px; border-radius:50%; object-fit:cover;">`;
+                const card = createOfferCard(offer, true);
+                feed.appendChild(card);
+            });
+        }
+
+        // --- LOAD RECENTLY VIEWED ---
+        function loadRecentlyViewed() {
+            const user = getCurrent();
+            const feed = document.getElementById('favFeed');
+            
+            if (!user) {
+                feed.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-history"></i>
+                        <h3>Please Login</h3>
+                        <p>Login to see your recently viewed items.</p>
+                        <a href="account.php">Go to Login</a>
+                    </div>`;
+                return;
+            }
+
+            feed.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading recently viewed...</p>
+                </div>`;
+
+            const recentIds = getRecentlyViewed();
+            
+            if (recentIds.length === 0) {
+                feed.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-history"></i>
+                        <p>No recently viewed items.</p>
+                        <a href="index.php">Browse Offers</a>
+                    </div>`;
+                return;
+            }
+
+            fetch('get-offers.php')
+                .then(response => response.json())
+                .then(data => {
+                    const allOffers = data.offers || [];
+                    displayRecentlyViewed(allOffers, recentIds, user);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    const allOffers = getOffers();
+                    displayRecentlyViewed(allOffers, recentIds, user);
+                });
+        }
+
+        function displayRecentlyViewed(allOffers, recentIds, user) {
+            const feed = document.getElementById('favFeed');
+            
+            const recentOffers = allOffers
+                .filter(offer => recentIds.includes(offer.id))
+                .sort((a, b) => {
+                    return recentIds.indexOf(a.id) - recentIds.indexOf(b.id);
+                });
+
+            if (recentOffers.length === 0) {
+                feed.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-history"></i>
+                        <p>No recently viewed items found.</p>
+                        <a href="index.php">Browse Offers</a>
+                    </div>`;
+                return;
+            }
+
+            feed.innerHTML = '';
+
+            const headerDiv = document.createElement('div');
+            headerDiv.style.display = 'flex';
+            headerDiv.style.justifyContent = 'space-between';
+            headerDiv.style.alignItems = 'center';
+            headerDiv.style.marginBottom = '20px';
+            headerDiv.style.padding = '0 10px';
+            
+            headerDiv.innerHTML = `
+                <h3 style="color: var(--primary);">Recently Viewed</h3>
+                <button onclick="clearRecentlyViewed()" style="padding: 5px 15px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 5px; cursor: pointer; color: var(--text-light, #666);">
+                    <i class="fas fa-trash"></i> Clear History
+                </button>
+            `;
+            feed.appendChild(headerDiv);
+
+            recentOffers.forEach(offer => {
+                const isFavorited = user && user.favorites ? user.favorites.includes(offer.id) : false;
+                const card = createOfferCard(offer, isFavorited);
+                feed.appendChild(card);
+            });
+        }
+
+        // --- PRICE ALERTS FUNCTIONS ---
+        let priceAlerts = [];
+        let triggeredAlertIds = new Set();
+
+        function checkForPriceDrops() {
+            const user = getCurrent();
+            if (!user || currentTab !== 'priceAlerts') return;
+
+            fetch('api/check-price-alerts-manual.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.triggered && data.triggered.length > 0) {
+                        data.triggered.forEach(alert => {
+                            if (!triggeredAlertIds.has(alert.id)) {
+                                triggeredAlertIds.add(alert.id);
+                                showNotification(
+                                    '🔥 Price Drop Alert!',
+                                    `${alert.offerTitle} is now €${alert.currentPrice}`,
+                                    'success',
+                                    () => {
+                                        if (currentTab !== 'priceAlerts') {
+                                            document.getElementById('tabPriceAlerts').click();
+                                        }
+                                    }
+                                );
+                                document.getElementById('alertBadge').style.display = 'inline';
+                            }
+                        });
+                        
+                        if (currentTab === 'priceAlerts') {
+                            loadPriceAlerts();
                         }
                     }
-                }
+                })
+                .catch(error => console.error('Error checking price drops:', error));
+        }
 
-                const html = `
-                    <div class="offer-card" id="card-${offer.id}">
-                        <button class="heart-btn liked" onclick="removeFavorite(this, ${offer.id})">
-                            <i class="fas fa-heart"></i>
-                        </button>
-                        <div class="card-image">
-                            <img src="${offer.image}" alt="${offer.title}">
+        function loadPriceAlerts() {
+            const user = getCurrent();
+            const feed = document.getElementById('favFeed');
+            
+            if (!user) {
+                feed.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-bell"></i>
+                        <h3>Please Login</h3>
+                        <p>Login to manage your price alerts.</p>
+                        <a href="account.php">Go to Login</a>
+                    </div>`;
+                return;
+            }
+
+            feed.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading price alerts...</p>
+                </div>`;
+
+            fetch('api/check-price-alerts-manual.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.triggered && data.triggered.length > 0) {
+                        data.triggered.forEach(alert => {
+                            triggeredAlertIds.add(alert.id);
+                            showNotification(
+                                '🔥 Price Drop Alert!',
+                                `${alert.offerTitle} is now €${alert.currentPrice}`,
+                                'success',
+                                () => {
+                                    if (currentTab !== 'priceAlerts') {
+                                        document.getElementById('tabPriceAlerts').click();
+                                    }
+                                }
+                            );
+                        });
+                        document.getElementById('alertBadge').style.display = 'inline';
+                    }
+                    
+                    return fetch('api/price-alerts.php');
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        priceAlerts = data.alerts;
+                        const hasTriggered = priceAlerts.some(a => a.is_notified == 1);
+                        document.getElementById('alertBadge').style.display = hasTriggered ? 'inline' : 'none';
+                        displayPriceAlerts(priceAlerts);
+                    } else {
+                        throw new Error(data.message || 'Failed to load alerts');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    feed.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <p>Failed to load price alerts.</p>
+                            <button onclick="loadPriceAlerts()" style="padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer;">Try Again</button>
+                        </div>`;
+                });
+        }
+
+        function displayPriceAlerts(alerts) {
+            const feed = document.getElementById('favFeed');
+            
+            if (!alerts || alerts.length === 0) {
+                feed.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-bell"></i>
+                        <h3>No Price Alerts</h3>
+                        <p>Set price alerts on items you're watching!</p>
+                        <a href="index.php">Browse Offers</a>
+                    </div>`;
+                return;
+            }
+
+            feed.innerHTML = '';
+
+            const headerDiv = document.createElement('div');
+            headerDiv.style.display = 'flex';
+            headerDiv.style.justifyContent = 'space-between';
+            headerDiv.style.alignItems = 'center';
+            headerDiv.style.marginBottom = '20px';
+            headerDiv.style.padding = '0 10px';
+            
+            headerDiv.innerHTML = `
+                <h3 style="color: var(--primary);">
+                    Your Price Alerts
+                    <span class="refresh-indicator" title="Auto-refreshes every 30 seconds"></span>
+                </h3>
+                <button onclick="clearAllAlerts()" style="padding: 5px 15px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 5px; cursor: pointer; color: var(--text-light, #666);">
+                    <i class="fas fa-trash"></i> Clear All
+                </button>
+            `;
+            feed.appendChild(headerDiv);
+
+            alerts.sort((a, b) => {
+                if (a.is_notified && !b.is_notified) return -1;
+                if (!a.is_notified && b.is_notified) return 1;
+                return new Date(b.created) - new Date(a.created);
+            });
+
+            alerts.forEach(alert => {
+                const card = createPriceAlertCard(alert);
+                feed.appendChild(card);
+            });
+        }
+
+        function createPriceAlertCard(alert) {
+            const card = document.createElement('div');
+            card.className = 'offer-card';
+            card.id = `alert-${alert.id}`;
+            
+            const currentPrice = parseFloat(alert.current_price || alert.currentPrice || 0);
+            const targetPrice = parseFloat(alert.target_price || alert.targetPrice || 0);
+            const originalPrice = parseFloat(alert.original_price || alert.originalPrice || currentPrice);
+            
+            const priceDrop = currentPrice < originalPrice;
+            const priceDropPercent = priceDrop ? Math.round((1 - currentPrice / originalPrice) * 100) : 0;
+            
+            let statusColor = 'var(--text-secondary)';
+            let statusText = 'Watching';
+            let statusIcon = 'fa-eye';
+            
+            if (alert.is_notified || alert.notified) {
+                statusColor = '#4CAF50';
+                statusText = 'Price Drop!';
+                statusIcon = 'fa-tag';
+            } else if (currentPrice < originalPrice) {
+                statusColor = '#ff9800';
+                statusText = `Price dropped ${priceDropPercent}%`;
+                statusIcon = 'fa-arrow-down';
+            }
+            
+            const offerImage = alert.offer_image || alert.offerImage || 'https://via.placeholder.com/200x150';
+            const offerTitle = alert.offer_title || alert.offerTitle || 'Unknown Item';
+            const offerId = alert.offer_id || alert.offerId;
+            
+            card.innerHTML = `
+                <div class="card-image" style="position: relative;">
+                    <img src="${offerImage}" alt="${offerTitle}" onerror="this.src='https://via.placeholder.com/200x150'">
+                    ${(alert.is_notified || alert.notified) ? '<div class="price-drop-badge">🔥 PRICE DROP</div>' : ''}
+                </div>
+                <div class="card-details">
+                    <div>
+                        <div class="card-header">
+                            <div class="title-price-wrapper">
+                                <h3 class="offer-title">${offerTitle}</h3>
+                                <span class="offer-price">€${currentPrice.toFixed(2)}</span>
+                            </div>
                         </div>
-                        <div class="card-details">
-                            <div class="card-header">
-                                <div class="offer-title">${offer.title}</div>
-                                <div class="offer-price">€${offer.price}</div>
+                        
+                        <div class="alert-details">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="color: var(--text-light, #666);">Target Price:</span>
+                                <span style="font-weight: bold; color: var(--primary);">€${targetPrice.toFixed(2)}</span>
                             </div>
-                            <p class="offer-desc">${offer.desc}</p>
-                            <div class="card-footer">
-                                <div class="seller-info">
-                                    ${avatarHtml}
-                                    <span style="margin-left:8px;">${sellerName} • ${offer.time}</span>
-                                </div>
-                                <button class="contact-btn">Message</button>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="color: var(--text-light, #666);">Original Price:</span>
+                                <span style="text-decoration: line-through; color: var(--text-light, #666); opacity: 0.7;">€${originalPrice.toFixed(2)}</span>
                             </div>
+                            ${priceDrop ? `
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--text-light, #666);">Savings:</span>
+                                <span style="color: #4CAF50; font-weight: bold;">-€${(originalPrice - currentPrice).toFixed(2)} (${priceDropPercent}%)</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="alert-status">
+                            <i class="fas ${statusIcon}" style="color: ${statusColor};"></i>
+                            <span style="color: ${statusColor}; font-size: 0.9rem;">${statusText}</span>
                         </div>
                     </div>
-                `;
-                // Add to bottom so they appear in order
-                feed.insertAdjacentHTML('beforeend', html);
+                    
+                    <div class="card-footer" style="margin-top: 15px;">
+                        <div style="display: flex; gap: 10px; width: 100%;">
+                            <button class="contact-btn" onclick="viewOffer(${offerId})" style="flex: 1;">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            <button class="contact-btn" onclick="deleteAlert(${alert.id}, ${offerId})" style="flex: 1; background: #ff4757; color: white; border-color: #ff4757;">
+                                <i class="fas fa-trash"></i> Remove
+                            </button>
+                        </div>
+                        ${(alert.is_notified || alert.notified) ? `
+                        <button class="contact-btn" onclick="contactSeller(${offerId})" style="width: 100%; margin-top: 10px; background: var(--primary); color: white;">
+                            <i class="fas fa-comment"></i> Message Seller
+                        </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        function setPriceAlert(offerId, offerTitle, offerImage, currentPrice) {
+            const user = getCurrent();
+            if (!user) {
+                showError("Please login to set price alerts.");
+                setTimeout(() => window.location.href = 'account.php', 1500);
+                return;
+            }
+            
+            const targetPrice = prompt(`Set target price for ${offerTitle} (current: €${currentPrice}):`, (currentPrice * 0.8).toFixed(2));
+            
+            if (!targetPrice) return;
+            
+            const targetPriceNum = parseFloat(targetPrice);
+            if (isNaN(targetPriceNum) || targetPriceNum <= 0) {
+                showError("Please enter a valid price.");
+                return;
+            }
+            
+            showError("Setting price alert...");
+            
+            fetch('api/price-alerts.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    offerId: offerId,
+                    offerTitle: offerTitle,
+                    offerImage: offerImage,
+                    targetPrice: targetPriceNum,
+                    currentPrice: currentPrice
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification('Success!', 'Price alert set successfully!', 'success');
+                    if (currentTab === 'priceAlerts') {
+                        loadPriceAlerts();
+                    }
+                } else {
+                    showError(data.message || "Failed to set price alert");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showError("Failed to connect to server");
             });
+        }
+
+        function deleteAlert(alertId, offerId) {
+            if (!confirm("Remove this price alert?")) return;
+            
+            fetch('api/price-alerts.php', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    alertId: alertId,
+                    offerId: offerId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    triggeredAlertIds.delete(alertId);
+                    
+                    const card = document.getElementById(`alert-${alertId}`);
+                    if (card) {
+                        card.style.transition = 'opacity 0.3s';
+                        card.style.opacity = '0';
+                        setTimeout(() => {
+                            card.remove();
+                            if (document.querySelectorAll('[id^="alert-"]').length === 0) {
+                                loadPriceAlerts();
+                            }
+                        }, 300);
+                    }
+                } else {
+                    showError(data.message || "Failed to delete alert");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showError("Failed to connect to server");
+            });
+        }
+
+        function clearAllAlerts() {
+            if (!confirm("Clear all your price alerts?")) return;
+            
+            fetch('api/price-alerts.php', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    clearAll: true
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    triggeredAlertIds.clear();
+                    showNotification('Success!', 'All alerts cleared', 'success');
+                    loadPriceAlerts();
+                } else {
+                    const alerts = document.querySelectorAll('[id^="alert-"]');
+                    if (alerts.length === 0) return;
+                    
+                    const deletePromises = [];
+                    alerts.forEach(alert => {
+                        const alertId = alert.id.replace('alert-', '');
+                        deletePromises.push(
+                            fetch('api/price-alerts.php', {
+                                method: 'DELETE',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ alertId: alertId })
+                            })
+                        );
+                    });
+                    
+                    Promise.all(deletePromises)
+                        .then(() => {
+                            triggeredAlertIds.clear();
+                            showNotification('Success!', 'All alerts cleared', 'success');
+                            loadPriceAlerts();
+                        })
+                        .catch(error => {
+                            console.error('Error clearing alerts:', error);
+                            showError('Failed to clear all alerts');
+                        });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showError('Failed to connect to server');
+            });
+        }
+
+        function viewOffer(offerId) {
+            window.location.href = `offer-details.php?id=${offerId}`;
+        }
+
+        function contactSeller(offerId) {
+            window.location.href = `chats.html`;
+        }
+
+        function createOfferCard(offer, isFavorited) {
+            const card = document.createElement('div');
+            card.className = 'offer-card';
+            card.id = `card-${offer.id}`;
+            
+            card.addEventListener('click', function(e) {
+                if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+                    return;
+                }
+                addToRecentlyViewed(offer.id);
+            });
+            
+            let sellerName = offer.seller || "Unknown";
+            const sellerAvatarSrc = offer.seller_avatar || offer.sellerAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(sellerName)}&background=ff2d7a&color=fff&size=30`;
+            let avatarHtml = `<img src="${sellerAvatarSrc}" class="seller-avatar-img" alt="${sellerName}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(sellerName)}&background=ff2d7a&color=fff&size=30'">`;
+            
+            let dateText = 'Recently';
+            if (offer.date) {
+                const date = new Date(offer.date);
+                dateText = date.toLocaleDateString();
+            }
+
+            const heartIcon = isFavorited ? 'fas' : 'far';
+            
+            card.innerHTML = `
+                <button class="heart-btn ${isFavorited ? 'liked' : ''}" onclick="toggleLike(this, ${offer.id}); event.stopPropagation();">
+                    <i class="${heartIcon} fa-heart"></i>
+                </button>
+                <div class="card-image">
+                    <img src="${offer.image || 'https://via.placeholder.com/200x150'}" alt="${offer.title}" onerror="this.src='https://via.placeholder.com/200x150'">
+                </div>
+                <div class="card-details">
+                    <div>
+                        <div class="card-header">
+                            <div class="title-price-wrapper">
+                                <h3 class="offer-title">${offer.title}</h3>
+                                <span class="offer-price">€${offer.price}</span>
+                            </div>
+                        </div>
+                        <p class="offer-desc">${offer.description || offer.desc || 'No description'}</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="seller-info">
+                            ${avatarHtml}
+                            <span style="margin-left:8px;">${sellerName} • ${dateText}</span>
+                        </div>
+                        <div style="display: flex; gap: 5px;">
+                            <button class="contact-btn" onclick="setPriceAlert(${offer.id}, '${offer.title.replace(/'/g, "\\'")}', '${offer.image || 'https://via.placeholder.com/200x150'}', ${offer.price}); event.stopPropagation();" style="padding: 6px 10px;">
+                                <i class="fas fa-bell"></i>
+                            </button>
+                            <button class="contact-btn" onclick="contactSeller(${offer.id}); event.stopPropagation();">Message</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        function toggleLike(btn, offerId) {
+            let user = getCurrent();
+            
+            if (!user) {
+                showError("Please login to save favorites.");
+                setTimeout(() => window.location.href = 'account.php', 1500);
+                return;
+            }
+
+            const wasLiked = btn.classList.contains('liked');
+            
+            if (wasLiked) {
+                btn.classList.remove('liked');
+                btn.querySelector('i').className = 'far fa-heart';
+            } else {
+                btn.classList.add('liked');
+                btn.querySelector('i').className = 'fas fa-heart';
+            }
+
+            btn.disabled = true;
+
+            fetch('api/toggle-favorite.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    offerId: offerId,
+                    action: 'toggle'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (user) {
+                        user.favorites = data.favorites;
+                        localStorage.setItem('currentUser', JSON.stringify(user));
+                    }
+                    if (currentTab === 'favorites') {
+                        loadFavorites();
+                    }
+                } else {
+                    if (wasLiked) {
+                        btn.classList.add('liked');
+                        btn.querySelector('i').className = 'fas fa-heart';
+                    } else {
+                        btn.classList.remove('liked');
+                        btn.querySelector('i').className = 'far fa-heart';
+                    }
+                    showError(data.message || 'Failed to update favorite');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                if (wasLiked) {
+                    btn.classList.add('liked');
+                    btn.querySelector('i').className = 'fas fa-heart';
+                } else {
+                    btn.classList.remove('liked');
+                    btn.querySelector('i').className = 'far fa-heart';
+                }
+                showError('Failed to connect to server');
+            })
+            .finally(() => {
+                btn.disabled = false;
+            });
+        }
+
+        // --- INIT ---
+        window.onload = function() {
+            initTheme();
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const tab = urlParams.get('tab');
+            
+            if (tab === 'recent') {
+                document.querySelectorAll('.category-list li').forEach(li => li.classList.remove('active'));
+                document.getElementById('tabRecent').classList.add('active');
+                currentTab = 'recent';
+            } else if (tab === 'priceAlerts') {
+                document.querySelectorAll('.category-list li').forEach(li => li.classList.remove('active'));
+                document.getElementById('tabPriceAlerts').classList.add('active');
+                currentTab = 'priceAlerts';
+                autoRefreshInterval = setInterval(checkForPriceDrops, 30000);
+            } else {
+                document.getElementById('tabFavorites').classList.add('active');
+                currentTab = 'favorites';
+            }
+            
+            loadTabContent();
         };
 
-        // --- REMOVE FAVORITE ---
-        function removeFavorite(btn, id) {
-            let user = getCurrent();
-            if (!user.favorites) return;
-
-            // Remove from array
-            const index = user.favorites.indexOf(id);
-            if (index > -1) {
-                user.favorites.splice(index, 1);
+        window.onunload = function() {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
             }
+        };
 
-            // Save Data
-            saveCurrent(user);
-            
-            let allUsers = getUsers();
-            const userIdx = allUsers.findIndex(u => u.username === user.username);
-            if (userIdx !== -1) {
-                allUsers[userIdx] = user;
-                saveUsers(allUsers);
-            }
-
-            // VISUAL: Remove the card from the screen immediately
-            const card = document.getElementById(`card-${id}`);
-            if(card) {
-                card.style.opacity = '0';
-                setTimeout(() => card.remove(), 300); // Wait for fade out
-                
-                // Check if list is empty now
-                if (user.favorites.length === 0) {
-                    document.getElementById('favFeed').innerHTML = '<p style="color:#666;">You haven\'t liked any offers yet.</p>';
-                }
-            }
+        // Check for error message in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('error')) {
+            showError(decodeURIComponent(urlParams.get('error')));
+            window.history.replaceState({}, document.title, 'favorites.html');
         }
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (!localStorage.getItem('campuscycle_theme')) {
+                setTheme(e.matches ? 'dark' : 'light');
+            }
+        });
     </script>
+
+<!-- Floating theme toggle (matches all other pages) -->
+<script>
+(function() {
+    const THEME_KEY = 'campuscycle_theme';
+    const themes = {
+        light: { icon: '☀️', label: 'Light Mode' },
+        dark: { icon: '🌙', label: 'Dark Mode' },
+        'high-contrast': { icon: '◑', label: 'High Contrast' }
+    };
+    function setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem(THEME_KEY, theme);
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.theme === theme);
+        });
+    }
+    function createThemeToggle() {
+        if (document.querySelector('.theme-toggle')) return;
+        const wrap = document.createElement('div');
+        wrap.className = 'theme-toggle';
+        Object.keys(themes).forEach(t => {
+            const btn = document.createElement('button');
+            btn.className = `theme-btn ${t}`;
+            btn.dataset.theme = t;
+            btn.title = themes[t].label;
+            btn.innerHTML = themes[t].icon;
+            btn.addEventListener('click', () => setTheme(t));
+            wrap.appendChild(btn);
+        });
+        document.body.appendChild(wrap);
+        setTheme(localStorage.getItem(THEME_KEY) || 'light');
+    }
+    document.readyState === 'loading'
+        ? document.addEventListener('DOMContentLoaded', createThemeToggle)
+        : createThemeToggle();
+})();
+</script>
 </body>
 </html>
