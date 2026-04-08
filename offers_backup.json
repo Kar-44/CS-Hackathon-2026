@@ -1,0 +1,46 @@
+[
+    {
+        "id": 1772116307,
+        "title": "David\u2019s socks",
+        "price": "67",
+        "description": "Very high grade smell",
+        "category": "Clothing",
+        "seller": "L1ngL1ng",
+        "sellerUsername": "L1ngL1ng",
+        "image": "uploads\/1772116307_69a0595353450.jpeg",
+        "date": "2026-02-26 14:31:47"
+    },
+    {
+        "id": 1772116660,
+        "title": "Air Jordan 1 Obsidian",
+        "price": "120",
+        "description": "Brand new",
+        "category": "Other",
+        "seller": "Djsa",
+        "sellerUsername": "Djsa",
+        "image": "uploads\/1772116660_69a05ab49725b.jpeg",
+        "date": "2026-02-26 14:37:40"
+    },
+    {
+        "id": 1772464090,
+        "title": "Teemo",
+        "price": "240",
+        "description": "Teemo pixel",
+        "category": "Electronics",
+        "seller": "Karol",
+        "sellerUsername": "Karol",
+        "image": "uploads\/1772464090_69a5a7da668b9.png",
+        "date": "2026-03-02 15:08:10"
+    },
+    {
+        "id": 1772523002,
+        "title": "hi",
+        "price": "50",
+        "description": "hi",
+        "category": "Textbooks",
+        "seller": "Admin",
+        "sellerUsername": "Admin",
+        "image": "uploads\/1772523002_69a68dfac3cf9.jpg",
+        "date": "2026-03-03 07:30:02"
+    }
+]

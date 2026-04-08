@@ -1,0 +1,89 @@
+{
+    "users": [
+        {
+            "username": "keruzu",
+            "password": "$2y$10$b8Drw6an5FhMcoxTLc3WjOFKucH24\/cHD7uLd45ywVnSWDQLAFV0O",
+            "email": "keruzu@gmail.com",
+            "name": "",
+            "registered": "2026-02-26 12:29:13",
+            "profile": {
+                "avatar": "uploads\/avatars\/keruzu_1772115494.jpg",
+                "name": "keruzu",
+                "email": "keruzu@gmail.com",
+                "phone": ""
+            },
+            "favorites": []
+        },
+        {
+            "username": "Karol",
+            "password": "$2y$10$Wat.6sycXmeZAY5Omg3Ya.9JEsLsOWK4g.HOS5w1NkAirW7STMUdy",
+            "email": "kh@gmail.com",
+            "name": "",
+            "registered": "2026-02-26 13:07:05",
+            "profile": {
+                "avatar": "https:\/\/ui-avatars.com\/api\/?name=KA&background=ae8b23&color=fff&size=150&bold=true&length=2&font-size=0.5",
+                "name": "Karl",
+                "email": "kh@gmail.com",
+                "phone": ""
+            },
+            "favorites": []
+        },
+        {
+            "username": "Sanji",
+            "password": "$2y$10$37HFbHKkfoFBKpDKa\/Twnua8oYYPsL48DHq3\/zf\/FA8zjBzKjexQG",
+            "email": "",
+            "name": "",
+            "registered": "2026-02-26 14:17:15",
+            "profile": {
+                "avatar": "https:\/\/ui-avatars.com\/api\/?name=SA&background=6dfcd6&color=fff&size=150&bold=true&length=2&font-size=0.5",
+                "name": "",
+                "email": "",
+                "phone": ""
+            },
+            "favorites": []
+        },
+        {
+            "username": "Djsa",
+            "password": "$2y$10$qEvpb7rFf1zu1ZlRrOBkh.mMACag2oc0Lej.NXJ6loDnkEYaM5Dqy",
+            "email": "djsankoma@gmail.com",
+            "name": "",
+            "registered": "2026-02-26 14:30:33",
+            "profile": {
+                "avatar": "uploads\/avatars\/Djsa_1772116266.jpeg",
+                "name": "David Safo-Ankoma",
+                "email": "djsankoma@gmail.com",
+                "phone": "899524800"
+            },
+            "favorites": []
+        },
+        {
+            "username": "L1ngL1ng",
+            "password": "$2y$10$aUKSqZGCiJtt1BS7TaDvL.P3AA5sutwVGzBC1\/qwadohQRJRx1ln.",
+            "email": "",
+            "name": "",
+            "registered": "2026-02-26 14:30:55",
+            "profile": {
+                "avatar": "https:\/\/ui-avatars.com\/api\/?name=L1&background=6a1870&color=fff&size=150&bold=true&length=2&font-size=0.5",
+                "name": "",
+                "email": "",
+                "phone": ""
+            },
+            "favorites": []
+        },
+        {
+            "username": "Admin",
+            "password": "$2y$10$mSWcoRlEY0jaGTUPpf9BhOz0RpYvQWveoa8bDaxr8XLWRgWFlj1jG",
+            "email": "",
+            "name": "",
+            "registered": "2026-03-02 18:44:07",
+            "profile": {
+                "avatar": "uploads\/avatars\/Admin_1772478054.jpg",
+                "name": "Admin",
+                "email": "",
+                "phone": ""
+            },
+            "favorites": [],
+            "isAdmin": true
+        }
+    ]
+}

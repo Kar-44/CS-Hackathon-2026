@@ -1,0 +1,16 @@
+2026-03-16 17:46:03 - Getting chats for user: Admin
+2026-03-16 17:46:03 - Found 3 chats for user: Admin
+2026-03-16 17:46:05 - Getting chats for user: Admin
+2026-03-16 17:46:05 - Found 3 chats for user: Admin
+2026-03-16 17:46:10 - Getting chats for user: Admin
+2026-03-16 17:46:10 - Found 3 chats for user: Admin
+2026-03-16 17:46:15 - Getting chats for user: Admin
+2026-03-16 17:46:15 - Found 3 chats for user: Admin
+2026-03-16 17:48:16 - Getting chats for user: Mike Menat
+2026-03-16 17:48:16 - Found 3 chats for user: Mike Menat
+2026-03-16 17:48:20 - Getting chats for user: Mike Menat
+2026-03-16 17:48:20 - Found 3 chats for user: Mike Menat
+2026-03-16 17:48:23 - Getting chats for user: Mike Menat
+2026-03-16 17:48:23 - Found 3 chats for user: Mike Menat
+2026-03-16 17:48:24 - Getting chats for user: Mike Menat
+2026-03-16 17:48:24 - Found 3 chats for user: Mike Menat
