@@ -13,7 +13,7 @@ Built exclusively for the "Old is Gold" hackathon theme, this Type 2 Dynamic Web
 
 * Role-Based Access: Secure user authentication with *bcrypt* password hashing.
 * Dynamic Feed: Real-time marketplace homepage generated from database queries.
-* In-Built Chat: Long-polling messaging system for private student-to-student 				communication.
+* In-Built Chat: Long-polling messaging system for private student-to-student communication.
 * Offer Management: Create, edit, and delete offers with integrated image uploading.
 * Admin Dashboard: Moderation tools for maintaining community guidelines.
 
